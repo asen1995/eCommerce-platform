@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -55,9 +57,10 @@ public class ProductService {
         return new ProductsResponse(currentPageProducts.getContent(), currentPageProducts.getTotalElements());
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED) //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
     public String orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
-        Optional<Product> oProduct = productRepository.findById(id);
+        Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
 
         if (!oProduct.isPresent()) {
             throw new ProductNotFoundException("Product not found");
@@ -69,8 +72,10 @@ public class ProductService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
+            System.out.println("you ordered " + orderedQuantity + " " + product.getName());
             return String.format("You successfully ordered %s %s", orderedQuantity, product.getName());
         } else {
+            System.out.println("Not enough quantity");
             throw new ProductQuantityNotEnoughException(
                     String.format("Your order is %s of Product %s, but there are only %s left",
                             orderedQuantity,
