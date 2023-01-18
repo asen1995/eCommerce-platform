@@ -3,11 +3,14 @@ package com.ecommerence.platform.controller;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
+import com.ecommerence.platform.model.Category;
 import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -30,6 +33,14 @@ public class ProductController {
 
         return new ResponseEntity<>(productsResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> getProductsAvailablePerCategories() {
+        List<Category> categoriesWithProductsAvailableList = productService.getProductsAvailablePerCategories();
+
+        return new ResponseEntity<>(categoriesWithProductsAvailableList, HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
