@@ -40,6 +40,15 @@ public class ProductController {
     }
 
 
+    @PostMapping("{id}/order/{quantity}")
+    public ResponseEntity<String> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
+
+        String orderMessage = productService.orderProduct(id, quantity);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(String.format(orderMessage));
+    }
+
     @PutMapping
     public ResponseEntity<String> updateProduct(@RequestBody Product product) {
         productService.updateProduct(product);
