@@ -31,7 +31,7 @@ public class OrderService {
 
         Product product = oProduct.get();
 
-        if (product.getQuantity() > orderedQuantity) {
+        if (product.getQuantity() >= orderedQuantity) {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 

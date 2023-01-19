@@ -32,7 +32,7 @@ public class Product {
     private String description;
 
     @NotNull(message = "Quantity is mandatory")
-    @Min(value = 1, message = "Quantity must be greater or equal to 1")
+    @Min(value = 0, message = "Quantity cannot be negative")
     @Column(name = "product_quantity")
     private Integer quantity;
 
