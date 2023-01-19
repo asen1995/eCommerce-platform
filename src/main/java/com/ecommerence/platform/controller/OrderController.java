@@ -20,6 +20,11 @@ public class OrderController {
     @PostMapping("/product/{id}/order/{quantity}")
     public ResponseEntity<String> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
 
+        if(quantity <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Quantity must be greater than 0");
+        }
+
         String orderMessage = orderService.orderProduct(id, quantity);
 
         return ResponseEntity.status(HttpStatus.OK)
