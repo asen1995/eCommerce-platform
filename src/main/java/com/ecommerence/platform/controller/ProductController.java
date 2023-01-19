@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -23,8 +25,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam("orderBy") ProductOrderEnum orderBy,
                                                            @RequestParam("direction") DirectionEnum direction,
-                                                           @RequestParam("page") Integer page,
-                                                           @RequestParam("pageSize") Integer pageSize) {
+                                                           @RequestParam(value = "page" , defaultValue = "0") Integer page ,
+                                                           @RequestParam(value = "pageSize" ,defaultValue = "5") Integer pageSize) {
 
         ProductsResponse productsResponse = productService.getProducts(orderBy, direction, page, pageSize);
 
@@ -33,7 +35,7 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<String> createProduct(@RequestBody Product product) {
+    public ResponseEntity<String> createProduct(@RequestBody @Valid Product product) {
         productService.createProduct(product);
 
         return ResponseEntity.status(HttpStatus.CREATED)
