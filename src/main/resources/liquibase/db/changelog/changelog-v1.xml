@@ -22,4 +22,8 @@
     <changeSet id="2" author="asen">
         <createSequence sequenceName="product_id_seq" incrementBy="1" startValue="1"/>
     </changeSet>
+
+    <changeSet id="3" author="asen">
+        <addUniqueConstraint tableName="product" columnNames="product_name, product_category" constraintName="product_name_category_unique"/>
+    </changeSet>
 </databaseChangeLog>

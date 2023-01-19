@@ -9,12 +9,14 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"product_name", "product_category"})
+})
 @Data
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE , generator = "product_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
     @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq", allocationSize = 1)
     private Integer id;
 
