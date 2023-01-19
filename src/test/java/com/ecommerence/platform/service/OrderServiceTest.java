@@ -31,7 +31,6 @@ public class OrderServiceTest {
 
     @Test
     public void testOrder5ProductWhenQuantityIs10() throws Exception {
-        List<Product> products = new ArrayList<>();
 
         Product product = new Product();
         product.setId(1);
