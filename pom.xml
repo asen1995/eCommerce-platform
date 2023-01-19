@@ -38,6 +38,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
@@ -69,6 +73,20 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.0.0</version>
+                <configuration>
+                    <changeLogFile>db/changelog/db.changelog-master.xml</changeLogFile>
+                    <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
+                    <username>asen311</username>
+                    <password>asen311</password>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

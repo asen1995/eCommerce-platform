@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="1" author="asen">
+        <createTable tableName="product">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_name" type="varchar(255)"/>
+            <column name="product_category" type="varchar(255)"/>
+            <column name="product_description" type="varchar(255)"/>
+            <column name="product_quantity" type="number(10)"/>
+            <column name="created_date" type="DATE"/>
+            <column name="updated_date" type="DATE"/>
+        </createTable>
+
+
+    </changeSet>
+
+    <changeSet id="2" author="asen">
+        <createSequence sequenceName="product_id_seq" incrementBy="1" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>
