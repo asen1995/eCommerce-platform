@@ -1,6 +1,9 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.entity.Product;
+import com.ecommerence.platform.enums.DirectionEnum;
+import com.ecommerence.platform.enums.ProductOrderEnum;
+import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -12,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -40,6 +46,39 @@ public class ProductControllerTest {
         product.setCategory("Monitor");
         product.setDescription("Monitor for testing");
         product.setQuantity(4);
+    }
+
+
+
+    @Test
+    public void testGetAllProducts() throws Exception {
+        Product product = new Product();
+        product.setId(1);
+        product.setName("Test Product");
+        product.setCategory("Monitor");
+        product.setDescription("Monitor for testing");
+        product.setQuantity(4);
+
+        Product product2 = new Product();
+        product2.setId(2);
+        product2.setName("Test Product 2");
+        product2.setCategory("Monitor");
+        product2.setDescription("Monitor for testing 2");
+        product2.setQuantity(80);
+
+        ProductsResponse productsResponse = new ProductsResponse(Arrays.asList(product,product2), 84l);
+
+
+        when(productService.getProducts(any(ProductOrderEnum.class), any(DirectionEnum.class), anyInt(),  anyInt()))
+                .thenReturn(productsResponse);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expected = objectMapper.writeValueAsString(productsResponse);
+
+        mockMvc.perform(get("/product?orderBy=NAME&direction=ASC&page=1&pageSize=10"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(expected));
     }
 
     @Test
