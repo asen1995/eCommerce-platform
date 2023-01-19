@@ -25,8 +25,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam("orderBy") ProductOrderEnum orderBy,
                                                            @RequestParam("direction") DirectionEnum direction,
-                                                           @RequestParam("page") Integer page,
-                                                           @RequestParam("pageSize") Integer pageSize) {
+                                                           @RequestParam(value = "page" , defaultValue = "0") Integer page ,
+                                                           @RequestParam(value = "pageSize" ,defaultValue = "5") Integer pageSize) {
 
         ProductsResponse productsResponse = productService.getProducts(orderBy, direction, page, pageSize);
 
