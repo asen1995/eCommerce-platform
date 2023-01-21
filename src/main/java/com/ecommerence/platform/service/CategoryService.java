@@ -13,7 +13,7 @@ import java.util.Map;
 @Service
 public class CategoryService {
 
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public CategoryService(ProductRepository productRepository) {
         this.productRepository = productRepository;

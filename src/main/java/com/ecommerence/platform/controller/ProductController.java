@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RequestMapping("/product")
 public class ProductController {
 
-    ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
