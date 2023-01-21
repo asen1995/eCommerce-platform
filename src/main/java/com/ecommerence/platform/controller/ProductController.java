@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -39,7 +40,7 @@ public class ProductController {
         productService.createProduct(product);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format("Product %s created", product.getName()));
+                .body(String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName()));
     }
 
     @PutMapping
@@ -47,7 +48,7 @@ public class ProductController {
         productService.updateProduct(product);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Product updated");
+                .body(AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE);
     }
 
     @DeleteMapping
@@ -55,6 +56,6 @@ public class ProductController {
         productService.deleteProduct(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Product deleted");
+                .body(AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE);
     }
 }

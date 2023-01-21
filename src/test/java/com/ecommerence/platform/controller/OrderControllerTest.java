@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.service.OrderService;
@@ -50,6 +51,13 @@ public class OrderControllerTest {
 
         mockMvc.perform(post("/product/1/order/2"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testOrderProduct_WithNegativeQuantity() throws Exception {
+        mockMvc.perform(post("/product/1/order/-2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE));
     }
 }
 

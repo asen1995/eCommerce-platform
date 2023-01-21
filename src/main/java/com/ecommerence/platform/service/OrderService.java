@@ -1,5 +1,6 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
@@ -26,7 +27,7 @@ public class OrderService {
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
 
         if (!oProduct.isPresent()) {
-            throw new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE);
         }
 
         Product product = oProduct.get();
@@ -35,12 +36,11 @@ public class OrderService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
-            System.out.println("you ordered " + orderedQuantity + " " + product.getName());
-            return String.format("You successfully ordered %s %s", orderedQuantity, product.getName());
+            return String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName());
+
         } else {
-            System.out.println("Not enough quantity");
             throw new ProductQuantityNotEnoughException(
-                    String.format("Your order is %s of Product %s, but there are only %s left",
+                    String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
                             orderedQuantity,
                             product.getName(),
                             product.getQuantity()));

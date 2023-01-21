@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -17,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -89,11 +89,13 @@ public class ProductControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(product);
 
+        String expectedMessage = String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName());
+
         mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Product Test Product created"));
+                .andExpect(content().string(expectedMessage));
     }
 
     @Test
@@ -107,7 +109,7 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Product updated"));
+                .andExpect(content().string(AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE));
     }
 
     @Test
@@ -116,6 +118,6 @@ public class ProductControllerTest {
 
         mockMvc.perform(delete("/product?id=1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Product deleted"));
+                .andExpect(content().string(AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE));
     }
 }
