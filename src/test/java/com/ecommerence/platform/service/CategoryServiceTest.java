@@ -1,8 +1,8 @@
 package com.ecommerence.platform.service;
 
-import com.ecommerence.platform.entity.Product;
-import com.ecommerence.platform.model.Category;
+import com.ecommerence.platform.CategoryAvailableProductsMock;
 import com.ecommerence.platform.repository.ProductRepository;
+import com.ecommerence.platform.response.CategoryAvailableProducts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -27,43 +27,23 @@ public class CategoryServiceTest {
 
     @Test
     public void testGetProductsAvailablePerCategories() throws Exception {
-        List<Product> products = new ArrayList<>();
-
-        Product first = new Product();
-        first.setId(1);
-        first.setName("Dell monitor");
-        first.setCategory("Monitor");
-        first.setQuantity(10);
-
-        Product second = new Product();
-        second.setId(2);
-        second.setName("Dell keyboard");
-        second.setCategory("Keyboard");
-        second.setQuantity(10);
-
-        Product third = new Product();
-        third.setId(3);
-        third.setName("HP Monitor");
-        third.setCategory("Monitor");
-        third.setQuantity(30);
 
 
-        products.add(first);
-        products.add(second);
-        products.add(third);
+        List<CategoryAvailableProducts> categoryAvailableProducts = new ArrayList<>();
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
 
-        when(productRepository.findAll()).thenReturn(products);
+        when(productRepository.findProductsAvailablePerCategories()).thenReturn(categoryAvailableProducts);
 
-        List<Category> categoriesExpected = new ArrayList<>();
-        Category firstCategory = new Category("Monitor", 40);
-        Category secondCategory = new Category("Keyboard", 10);
+        List<CategoryAvailableProducts> categoriesExpected = new ArrayList<>();
 
-        categoriesExpected.add(firstCategory);
-        categoriesExpected.add(secondCategory);
+        categoriesExpected.add(new CategoryAvailableProductsMock());
+        categoriesExpected.add(new CategoryAvailableProductsMock());
 
-        List<Category> result = categoryService.getProductsAvailablePerCategories();
+        List<CategoryAvailableProducts> result = categoryService.getProductsAvailablePerCategories();
 
-        assertArrayEquals(categoriesExpected.toArray(), result.toArray());
+        assertEquals(categoriesExpected.get(0).getCategory(), result.get(0).getCategory());
+        assertEquals(categoriesExpected.get(0).getAvailableProducts(), result.get(0).getAvailableProducts());
 
     }
 }
