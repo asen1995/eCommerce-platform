@@ -1,6 +1,7 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class OrderController {
     }
 
 
-    @PostMapping("/product/{id}/order/{quantity}")
+    @PostMapping("/v1/products/{id}/order/{quantity}")
     public ResponseEntity<String> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
 
         if(quantity <= 0) {

@@ -3,6 +3,7 @@ package com.ecommerence.platform.controller;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
+import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/v1/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -23,8 +24,8 @@ public class ProductController {
 
 
     @GetMapping
-    public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam("orderBy") ProductOrderEnum orderBy,
-                                                           @RequestParam("direction") DirectionEnum direction,
+    public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam(value = "orderBy", defaultValue = "NAME") ProductOrderEnum orderBy,
+                                                           @RequestParam(value = "direction", defaultValue = "ASC") DirectionEnum direction,
                                                            @RequestParam(value = "page", defaultValue = "0") Integer page,
                                                            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
 
@@ -35,26 +36,28 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<String> createProduct(@RequestBody @Valid Product product) {
+    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
 
-        String responseMessage = productService.createProduct(product);
+        Product createdProduct = productService.createProduct(product);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(responseMessage);
+                .body(createdProduct);
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateProduct(@RequestBody Product product) {
-        String responseMessage = productService.updateProduct(product);
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> update(@PathVariable("id") Integer id, @Valid @RequestBody Product product) throws ProductNotFoundException {
+
+        Product updatedProduct = productService.updateProduct(id, product);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(responseMessage);
+                .body(updatedProduct);
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteProduct(@RequestParam("id") Integer id) {
-        String responseMessage = productService.deleteProduct(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) throws ProductNotFoundException {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseMessage);
+        productService.deleteProduct(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -18,4 +18,5 @@ public class AppConstants {
     public static final String PRODUCT_QUANTITY_IS_MANDATORY_MESSAGE = "Quantity is mandatory";
 
 
+    public static final String PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE = "Product with id %d does not exist";
 }
