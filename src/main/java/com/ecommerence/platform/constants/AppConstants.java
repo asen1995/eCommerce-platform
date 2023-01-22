@@ -19,4 +19,5 @@ public class AppConstants {
 
 
     public static final String PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE = "Product with id %d does not exist";
+    public static final String PAIR_OF_PRODUCT_CATEGORY_SHOULD_BE_UNIQUE_ERROR_MESSAGE = "The pair of product name and category should be unique!";
 }

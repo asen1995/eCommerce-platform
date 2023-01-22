@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.model.ErrorMessage;
@@ -28,7 +29,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleException(DataIntegrityViolationException e) {
-        return new ResponseEntity<>(new ErrorMessage("The pair of product name and category should be unique!", new Date()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorMessage(AppConstants.PAIR_OF_PRODUCT_CATEGORY_SHOULD_BE_UNIQUE_ERROR_MESSAGE, new Date()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
