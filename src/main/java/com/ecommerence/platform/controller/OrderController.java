@@ -1,5 +1,7 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,24 +12,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrderController {
 
-    OrderService orderService;
+    private final OrderService orderService;
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
 
-    @PostMapping("/product/{id}/order/{quantity}")
-    public ResponseEntity<String> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
+    @PostMapping("/v1/products/{id}/order/{quantity}")
+    public ResponseEntity<OrderResponse> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
 
-        if(quantity <= 0) {
+        if (quantity <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Quantity must be greater than 0");
+                    .body(new OrderResponse(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE, null));
         }
 
-        String orderMessage = orderService.orderProduct(id, quantity);
+        OrderResponse orderResponse = orderService.orderProduct(id, quantity);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(String.format(orderMessage));
+                .body(orderResponse);
     }
 }

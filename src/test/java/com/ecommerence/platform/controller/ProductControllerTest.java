@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -17,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -75,7 +75,7 @@ public class ProductControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String expected = objectMapper.writeValueAsString(productsResponse);
 
-        mockMvc.perform(get("/product?orderBy=NAME&direction=ASC&page=1&pageSize=10"))
+        mockMvc.perform(get("/v1/products?orderBy=NAME&direction=ASC&page=1&pageSize=10"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(expected));
@@ -84,38 +84,35 @@ public class ProductControllerTest {
     @Test
     public void testCreateProduct() throws Exception {
 
-        when(productService.createProduct(any(Product.class))).thenReturn("Success");
+        when(productService.createProduct(any(Product.class))).thenReturn(product);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(product);
 
-        mockMvc.perform(post("/product")
+        mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Product Test Product created"));
+                .andExpect(content().string(json));
     }
 
     @Test
     public void testUpdateProduct() throws Exception {
-        when(productService.updateProduct(any(Product.class))).thenReturn("Success");
+        when(productService.updateProduct(anyInt(), any(Product.class))).thenReturn(product);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(product);
 
-        mockMvc.perform(put("/product")
+        mockMvc.perform(put("/v1/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Product updated"));
+                .andExpect(content().string(json));
     }
 
     @Test
     public void testDeleteProduct() throws Exception {
-        when(productService.deleteProduct(anyInt())).thenReturn("Success");
-
-        mockMvc.perform(delete("/product?id=1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Product deleted"));
+        mockMvc.perform(delete("/v1/products/1"))
+                .andExpect(status().isNoContent());
     }
 }

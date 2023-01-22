@@ -3,6 +3,7 @@ package com.ecommerence.platform.service;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
+import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.ProductsResponse;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 
@@ -95,20 +97,36 @@ public class ProductServiceTest {
 
     @Test
     public void testCreateProduct() {
-        String response = productService.createProduct(product);
-        assertEquals("Success", response);
+        Product resultProduct = productService.createProduct(product);
+        assertEquals(product, resultProduct);
     }
 
 
     @Test
-    public void testDeleteProduct() {
-        String response = productService.deleteProduct(1);
-        assertEquals("Success", response);
+    public void testDeleteProduct() throws ProductNotFoundException {
+        when(productRepository.existsById(anyInt())).thenReturn(true);
+
+        productService.deleteProduct(1);
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testDeleteNotExistingProduct() throws ProductNotFoundException {
+        when(productRepository.existsById(anyInt())).thenReturn(false);
+
+        productService.deleteProduct(1);
     }
 
     @Test
-    public void testUpdateProduct() {
-        String response = productService.updateProduct(product);
-        assertEquals("Success", response);
+    public void testUpdateProduct() throws ProductNotFoundException {
+        when(productRepository.existsById(anyInt())).thenReturn(true);
+        Product result = productService.updateProduct(1, product);
+        assertEquals(product, result);
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testUpdateNonExistingProduct() throws ProductNotFoundException {
+        when(productRepository.existsById(anyInt())).thenReturn(false);
+        Product result = productService.updateProduct(1, product);
+        assertEquals(product, result);
     }
 }

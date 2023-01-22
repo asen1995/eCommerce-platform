@@ -1,9 +1,11 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.repository.ProductRepository;
+import com.ecommerence.platform.response.OrderResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,11 +40,13 @@ public class OrderServiceTest {
 
         when(productRepository.findByIdForUpdate(anyInt())).thenReturn(Optional.of(product));
 
-        String expected = String.format("You successfully ordered %s %s", 5, product.getName());
         int orderedQuantity = 5;
-        String result = orderService.orderProduct(1, orderedQuantity);
 
-        assertEquals(expected, result);
+        String expected = String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, 5, product.getName());
+
+        OrderResponse orderResponse = orderService.orderProduct(1, orderedQuantity);
+
+        assertEquals(expected, orderResponse.getMessage());
     }
 
     @Test(expected = ProductQuantityNotEnoughException.class)

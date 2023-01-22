@@ -1,6 +1,7 @@
 package com.ecommerence.platform.controller;
 
-import com.ecommerence.platform.model.Category;
+import com.ecommerence.platform.CategoryAvailableProductsMock;
+import com.ecommerence.platform.response.CategoryAvailableProducts;
 import com.ecommerence.platform.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -30,30 +31,32 @@ public class CategoryControllerTest {
 
     @Test
     public void testGetProductsAvailablePerCategories() throws Exception {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Monitor", 2));
-        when(categoryService.getProductsAvailablePerCategories()).thenReturn(categories);
+        List<CategoryAvailableProducts> categoryAvailableProducts = new ArrayList<>();
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
+
+        when(categoryService.getProductsAvailablePerCategories()).thenReturn(categoryAvailableProducts);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(categories);
+        String json = mapper.writeValueAsString(categoryAvailableProducts);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/categories"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(json));
     }
 
     @Test
     public void testGetProductsAvailablePerCategories_with3Categories() throws Exception {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Monitor", 2));
-        categories.add(new Category("Laptop", 28));
-        categories.add(new Category("Phone", 1000));
-        when(categoryService.getProductsAvailablePerCategories()).thenReturn(categories);
+        List<CategoryAvailableProducts> categoryAvailableProducts = new ArrayList<>();
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
+        categoryAvailableProducts.add(new CategoryAvailableProductsMock());
+
+        when(categoryService.getProductsAvailablePerCategories()).thenReturn(categoryAvailableProducts);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(categories);
+        String json = mapper.writeValueAsString(categoryAvailableProducts);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/categories"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(json));
     }
