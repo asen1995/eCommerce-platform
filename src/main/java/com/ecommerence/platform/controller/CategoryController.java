@@ -1,6 +1,6 @@
 package com.ecommerence.platform.controller;
 
-import com.ecommerence.platform.model.Category;
+import com.ecommerence.platform.response.CategoryAvailableProducts;
 import com.ecommerence.platform.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class CategoryController {
 
 
     @GetMapping
-    public ResponseEntity<List<Category>> getProductsAvailablePerCategories() {
-        List<Category> categoriesWithProductsAvailableList = categoryService.getProductsAvailablePerCategories();
+    public ResponseEntity<List<CategoryAvailableProducts>> getProductsAvailablePerCategories() {
+        List<CategoryAvailableProducts> categoriesWithProductsAvailableList = categoryService.getProductsAvailablePerCategories();
 
         return new ResponseEntity<>(categoriesWithProductsAvailableList, HttpStatus.OK);
     }
