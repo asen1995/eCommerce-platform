@@ -1,9 +1,12 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
+import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +32,28 @@ public class OrderControllerTest {
 
     @Test
     public void testOrderProduct() throws Exception {
-        when(orderService.orderProduct(anyInt(), anyInt())).thenReturn("Order placed successfully");
+
+        Product product = new Product();
+        product.setId(1);
+        product.setName("Dell monitor");
+        product.setCategory("Monitor");
+        product.setQuantity(10);
+        product.setDescription("Dell monitor 24 inch");
+
+        int orderQuantity = 2;
+
+        when(orderService.orderProduct(anyInt(), anyInt())).thenReturn(
+                new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderQuantity, product.getName())
+                ,product));
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expected = objectMapper.writeValueAsString(new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderQuantity, product.getName())
+                ,product));
 
         mockMvc.perform(post("/v1/products/1/order/2"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Order placed successfully"));
+                .andExpect(content().json(expected));
     }
 
 
@@ -55,9 +75,13 @@ public class OrderControllerTest {
 
     @Test
     public void testOrderProduct_WithNegativeQuantity() throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expected = objectMapper.writeValueAsString(new OrderResponse(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE, null));
+
         mockMvc.perform(post("/v1/products/1/order/-2"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE));
+                .andExpect(content().json(expected));
     }
 }
 

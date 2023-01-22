@@ -5,6 +5,7 @@ import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.repository.ProductRepository;
+import com.ecommerence.platform.response.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class OrderService {
 
 
     @Transactional(isolation = Isolation.READ_COMMITTED) //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
-    public String orderProduct(Integer id, Integer orderedQuantity) throws Exception {
+    public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
 
@@ -36,7 +37,11 @@ public class OrderService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
-            return String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName());
+            OrderResponse orderResponse =
+                    new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
+                    ,product);
+
+            return orderResponse;
 
         } else {
             throw new ProductQuantityNotEnoughException(

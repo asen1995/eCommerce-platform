@@ -20,16 +20,16 @@ public class OrderController {
 
 
     @PostMapping("/v1/products/{id}/order/{quantity}")
-    public ResponseEntity<String> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
+    public ResponseEntity<OrderResponse> orderProduct(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity) throws Exception {
 
-        if(quantity <= 0) {
+        if (quantity <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE);
+                    .body(new OrderResponse(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE, null));
         }
 
-        String orderMessage = orderService.orderProduct(id, quantity);
+        OrderResponse orderResponse = orderService.orderProduct(id, quantity);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(String.format(orderMessage));
+                .body(orderResponse);
     }
 }
