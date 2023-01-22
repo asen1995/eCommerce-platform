@@ -39,7 +39,7 @@ public class CategoryControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(categoryAvailableProducts);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/categories"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(json));
     }
@@ -56,7 +56,7 @@ public class CategoryControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(categoryAvailableProducts);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/categories"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/categories"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(json));
     }

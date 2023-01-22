@@ -31,7 +31,7 @@ public class OrderControllerTest {
     public void testOrderProduct() throws Exception {
         when(orderService.orderProduct(anyInt(), anyInt())).thenReturn("Order placed successfully");
 
-        mockMvc.perform(post("/product/1/order/2"))
+        mockMvc.perform(post("/v1/products/1/order/2"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Order placed successfully"));
     }
@@ -41,7 +41,7 @@ public class OrderControllerTest {
     public void testOrderProduct_throwProductNotFound() throws Exception {
         when(orderService.orderProduct(anyInt(), anyInt())).thenThrow(ProductNotFoundException.class);
 
-        mockMvc.perform(post("/product/1/order/2"))
+        mockMvc.perform(post("/v1/products/1/order/2"))
                 .andExpect(status().isNotFound());
     }
 
@@ -49,13 +49,13 @@ public class OrderControllerTest {
     public void testOrderProduct_throwProductQuantityNotEnoughException() throws Exception {
         when(orderService.orderProduct(anyInt(), anyInt())).thenThrow(ProductQuantityNotEnoughException.class);
 
-        mockMvc.perform(post("/product/1/order/2"))
+        mockMvc.perform(post("/v1/products/1/order/2"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testOrderProduct_WithNegativeQuantity() throws Exception {
-        mockMvc.perform(post("/product/1/order/-2"))
+        mockMvc.perform(post("/v1/products/1/order/-2"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE));
     }
