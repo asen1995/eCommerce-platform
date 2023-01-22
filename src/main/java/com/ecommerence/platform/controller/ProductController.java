@@ -1,6 +1,5 @@
 package com.ecommerence.platform.controller;
 
-import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -26,8 +25,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam("orderBy") ProductOrderEnum orderBy,
                                                            @RequestParam("direction") DirectionEnum direction,
-                                                           @RequestParam(value = "page" , defaultValue = "0") Integer page ,
-                                                           @RequestParam(value = "pageSize" ,defaultValue = "5") Integer pageSize) {
+                                                           @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                           @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
 
         ProductsResponse productsResponse = productService.getProducts(orderBy, direction, page, pageSize);
 
@@ -37,25 +36,25 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody @Valid Product product) {
-        productService.createProduct(product);
 
+        String responseMessage = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName()));
+                .body(responseMessage);
     }
 
     @PutMapping
     public ResponseEntity<String> updateProduct(@RequestBody Product product) {
-        productService.updateProduct(product);
+        String responseMessage = productService.updateProduct(product);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE);
+                .body(responseMessage);
     }
 
     @DeleteMapping
     public ResponseEntity<String> deleteProduct(@RequestParam("id") Integer id) {
-        productService.deleteProduct(id);
+        String responseMessage = productService.deleteProduct(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE);
+                .body(responseMessage);
     }
 }

@@ -1,5 +1,6 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -95,20 +96,23 @@ public class ProductServiceTest {
 
     @Test
     public void testCreateProduct() {
+
+        String expected = String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName());
         String response = productService.createProduct(product);
-        assertEquals("Success", response);
+
+        assertEquals(expected, response);
     }
 
 
     @Test
     public void testDeleteProduct() {
         String response = productService.deleteProduct(1);
-        assertEquals("Success", response);
+        assertEquals(AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE, response);
     }
 
     @Test
     public void testUpdateProduct() {
         String response = productService.updateProduct(product);
-        assertEquals("Success", response);
+        assertEquals(AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE, response);
     }
 }

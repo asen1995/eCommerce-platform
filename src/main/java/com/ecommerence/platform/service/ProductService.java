@@ -1,5 +1,6 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -27,20 +28,20 @@ public class ProductService {
         product.setCreatedDate(new Date());
         productRepository.save(product);
 
-        return "Success";
+        return String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName());
     }
 
     public String deleteProduct(Integer id) {
         productRepository.deleteById(id);
 
-        return "Success";
+        return AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE;
     }
 
     public String updateProduct(Product product) {
         product.setUpdatedDate(new Date());
         productRepository.save(product);
 
-        return "Success";
+        return AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE;
     }
 
     public ProductsResponse getProducts(ProductOrderEnum orderBy, DirectionEnum direction, Integer page, Integer pageSize) {

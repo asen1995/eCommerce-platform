@@ -84,7 +84,7 @@ public class ProductControllerTest {
     @Test
     public void testCreateProduct() throws Exception {
 
-        when(productService.createProduct(any(Product.class))).thenReturn("Success");
+        when(productService.createProduct(any(Product.class))).thenReturn(String.format(AppConstants.PRODUCT_CREATED_SUCCESSFULLY_MESSAGE, product.getName()));
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(product);
@@ -100,7 +100,7 @@ public class ProductControllerTest {
 
     @Test
     public void testUpdateProduct() throws Exception {
-        when(productService.updateProduct(any(Product.class))).thenReturn("Success");
+        when(productService.updateProduct(any(Product.class))).thenReturn(AppConstants.PRODUCT_UPDATED_SUCCESSFULLY_MESSAGE);
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(product);
@@ -114,7 +114,7 @@ public class ProductControllerTest {
 
     @Test
     public void testDeleteProduct() throws Exception {
-        when(productService.deleteProduct(anyInt())).thenReturn("Success");
+        when(productService.deleteProduct(anyInt())).thenReturn(AppConstants.PRODUCT_DELETED_SUCCESSFULLY_MESSAGE);
 
         mockMvc.perform(delete("/product?id=1"))
                 .andExpect(status().isOk())
