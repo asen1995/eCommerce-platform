@@ -119,7 +119,7 @@ public class ProductControllerTest {
 
 
     @Test
-    public void testOrderProduct_throwDataIntegrityViolationException() throws Exception {
+    public void testCreateProduct_throwDataIntegrityViolationException() throws Exception {
         when(productService.createProduct(product)).thenThrow(DataIntegrityViolationException.class);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -132,7 +132,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void testOrderProduct_throwGeneralException() throws Exception {
+    public void testCreateProduct_throwGeneralException() throws Exception {
         when(productService.createProduct(product)).thenThrow(IllegalArgumentException.class);
 
         ObjectMapper mapper = new ObjectMapper();
