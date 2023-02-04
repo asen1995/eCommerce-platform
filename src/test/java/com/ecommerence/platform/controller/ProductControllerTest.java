@@ -130,4 +130,17 @@ public class ProductControllerTest {
                         .content(json))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testOrderProduct_throwGeneralException() throws Exception {
+        when(productService.createProduct(product)).thenThrow(IllegalArgumentException.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(product);
+
+        mockMvc.perform(post("/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isInternalServerError());
+    }
 }
