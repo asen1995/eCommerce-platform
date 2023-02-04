@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -114,5 +115,19 @@ public class ProductControllerTest {
     public void testDeleteProduct() throws Exception {
         mockMvc.perform(delete("/v1/products/1"))
                 .andExpect(status().isNoContent());
+    }
+
+
+    @Test
+    public void testOrderProduct_throwDataIntegrityViolationException() throws Exception {
+        when(productService.createProduct(product)).thenThrow(DataIntegrityViolationException.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(product);
+
+        mockMvc.perform(post("/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
     }
 }
