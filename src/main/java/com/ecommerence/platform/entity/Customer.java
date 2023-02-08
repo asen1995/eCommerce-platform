@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "customer",
@@ -46,6 +47,9 @@ public class Customer {
 
     @Column(name = "customer_city")
     private String city;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_date", updatable = false)
