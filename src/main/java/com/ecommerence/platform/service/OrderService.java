@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +67,7 @@ public class OrderService {
         }
     }
 
-    public OrderResponse placeOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
+    public OrderDto placeOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
 
         Customer customer = customerRepository.findById(orderDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
@@ -83,9 +84,10 @@ public class OrderService {
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
         order.setProducts(products);
+        order.setCreatedDate(new Date());
 
         orderRepository.save(order);
 
-        return null;
+        return orderDto;
     }
 }

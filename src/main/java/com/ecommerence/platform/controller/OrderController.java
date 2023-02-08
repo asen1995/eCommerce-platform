@@ -36,13 +36,13 @@ public class OrderController {
     }
 
     @PostMapping("/v1/products/order")
-    public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderDto order) throws Exception {
+    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto order) throws Exception {
 
-        OrderResponse orderResponse = orderService.placeOrder(order);
+        OrderDto orderDto = orderService.placeOrder(order);
 
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderDto);
     }
 
 }

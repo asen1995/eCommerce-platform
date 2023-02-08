@@ -3,6 +3,7 @@ package com.ecommerence.platform.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", updatable = false)
+    private Date createdDate;
 
     @Column(name = "order_approved")
     private Boolean approved;
