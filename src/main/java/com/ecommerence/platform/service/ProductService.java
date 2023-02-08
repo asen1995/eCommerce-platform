@@ -1,6 +1,7 @@
 package com.ecommerence.platform.service;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.dto.ProductDto;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -24,13 +25,19 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product product) {
+    public ProductDto createProduct(ProductDto productDto) {
+
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setCategory(productDto.getCategory());
+        product.setDescription(productDto.getDescription());
+        product.setQuantity(productDto.getQuantity());
 
         product.setCreatedDate(new Date());
 
         productRepository.save(product);
 
-        return product;
+        return productDto;
     }
 
     public void deleteProduct(Integer id) throws ProductNotFoundException {

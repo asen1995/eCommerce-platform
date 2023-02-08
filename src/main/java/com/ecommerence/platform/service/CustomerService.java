@@ -1,9 +1,12 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.dto.CustomerDto;
 import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.repository.CustomerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class CustomerService {
@@ -17,8 +20,21 @@ public class CustomerService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Customer register(Customer customer) {
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        return customerRepository.save(customer);
+    public CustomerDto register(CustomerDto customerDto) {
+
+        Customer customer = new Customer();
+        customer.setUsername(customerDto.getUsername());
+        customer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setEmail(customerDto.getEmail());
+        customer.setPhone(customerDto.getPhone());
+        customer.setAddress(customerDto.getAddress());
+        customer.setCity(customerDto.getCity());
+        customer.setCreatedDate(new Date());
+
+        customerRepository.save(customer);
+
+        return customerDto;
     }
 }

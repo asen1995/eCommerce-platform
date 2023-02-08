@@ -42,8 +42,9 @@ public class Product {
     @Column(name = "product_quantity")
     private Integer quantity;
 
-    @OneToMany(mappedBy = "product")
-    private List<OrderProduct> orderProducts;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_date", updatable = false)

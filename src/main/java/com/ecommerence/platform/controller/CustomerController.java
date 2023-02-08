@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.dto.CustomerDto;
 import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class CustomerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Customer> register(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.register(customer);
+    public ResponseEntity<CustomerDto> register(@RequestBody CustomerDto customerDto) {
+        CustomerDto savedCustomer = customerService.register(customerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCustomer);
     }
 

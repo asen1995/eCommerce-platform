@@ -19,4 +19,5 @@ public class AppConstants {
     public static final String PAIR_OF_PRODUCT_CATEGORY_SHOULD_BE_UNIQUE_ERROR_MESSAGE = "The pair of product name and category should be unique!";
     public static final String CUSTOMER_NAME_IS_MANDATORY_MESSAGE = "Customer name is mandatory";
     public static final String CUSTOMER_PASSWORD_IS_MANDATORY_MESSAGE = "Customer password is mandatory";
+    public static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer not found";
 }

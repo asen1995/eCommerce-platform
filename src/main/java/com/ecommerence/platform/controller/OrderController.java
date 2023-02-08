@@ -1,12 +1,14 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.dto.OrderDto;
 import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,4 +34,15 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(orderResponse);
     }
+
+    @PostMapping("/v1/products/order")
+    public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderDto order) throws Exception {
+
+        OrderResponse orderResponse = orderService.placeOrder(order);
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(null);
+    }
+
 }
