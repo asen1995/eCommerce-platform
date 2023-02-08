@@ -50,9 +50,4 @@ public class Customer {
     @Temporal(TemporalType.DATE)
     @Column(name = "created_date", updatable = false)
     private Date createdDate;
-
-//    public void setPassword(String password) {
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        this.password = passwordEncoder.encode(password);
-//    }
 }

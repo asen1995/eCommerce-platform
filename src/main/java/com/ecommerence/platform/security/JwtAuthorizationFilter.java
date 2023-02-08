@@ -1,13 +1,8 @@
 package com.ecommerence.platform.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,11 +15,8 @@ import java.util.ArrayList;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
-    private static final String SECRET = "asensecret";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String HEADER_STRING = "Authorization";
-
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -36,7 +28,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(HEADER_STRING);
+        String header = request.getHeader(AUTHORIZATION_HEADER);
 
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
             chain.doFilter(request, response);
@@ -51,9 +43,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
 
-        String token = request.getHeader(HEADER_STRING);
+        if (request.getHeader(AUTHORIZATION_HEADER) != null) {
 
-        if (token != null && jwtTokenProvider.validateToken(token.replace(TOKEN_PREFIX, ""))) {
+            String token = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_PREFIX, "");
+
+            if(!jwtTokenProvider.validateToken(token) ){
+                return null;
+            }
             String user = jwtTokenProvider.getUsername(token);
 
             if (user != null) {
