@@ -11,7 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "customer",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"customer_name"})
+                @UniqueConstraint(columnNames = {"customer_username"})
         })
 @Data
 public class Customer {
@@ -22,8 +22,8 @@ public class Customer {
     private Integer id;
 
     @NotBlank(message = AppConstants.CUSTOMER_NAME_IS_MANDATORY_MESSAGE)
-    @Column(name = "customer_name")
-    private String customerName;
+    @Column(name = "customer_username")
+    private String username;
 
     @NotBlank(message = AppConstants.CUSTOMER_PASSWORD_IS_MANDATORY_MESSAGE)
     @Column(name = "customer_password")
@@ -51,8 +51,8 @@ public class Customer {
     @Column(name = "created_date", updatable = false)
     private Date createdDate;
 
-    public void setPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.password = passwordEncoder.encode(password);
-    }
+//    public void setPassword(String password) {
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        this.password = passwordEncoder.encode(password);
+//    }
 }
