@@ -2,6 +2,7 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.dto.OrderDto;
+import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -53,4 +54,12 @@ public class OrderController {
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 
+    @PutMapping("/v1/products/orders/approve/{id}")
+    public ResponseEntity<OrderDto> approve(@PathVariable("id") Integer id) throws OrderNotFoundException {
+
+        OrderDto orderDto = orderService.approveOrder(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(orderDto);
+    }
 }

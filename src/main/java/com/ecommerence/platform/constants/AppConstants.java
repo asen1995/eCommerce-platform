@@ -20,4 +20,5 @@ public class AppConstants {
     public static final String CUSTOMER_NAME_IS_MANDATORY_MESSAGE = "Customer name is mandatory";
     public static final String CUSTOMER_PASSWORD_IS_MANDATORY_MESSAGE = "Customer password is mandatory";
     public static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer not found";
+    public static final String ORDER_NOT_FOUND_MESSAGE = "Order not found";
 }

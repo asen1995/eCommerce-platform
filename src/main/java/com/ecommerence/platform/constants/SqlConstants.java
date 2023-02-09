@@ -23,4 +23,6 @@ public class SqlConstants {
             "  Customer.customer_last_name LIKE  '%' || :search || '%'  OR\n" +
             "  Orders.id LIKE  '%' || :search || '%'  OR\n" +
             "  Orders.order_comment LIKE  '%' || :search || '%' )";
+
+    public static final String GET_ORDER_BY_ID_FOR_UPDATE = "SELECT * FROM orders WHERE id = :id  FOR UPDATE";
 }

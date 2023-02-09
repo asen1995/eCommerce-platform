@@ -6,6 +6,7 @@ import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.entity.Order;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.CustomerNotFoundException;
+import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.repository.CustomerRepository;
@@ -116,5 +117,23 @@ public class OrderService {
             return orderDto;
         }).collect(Collectors.toList());
 
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public OrderDto approveOrder(Integer id) throws OrderNotFoundException {
+
+        Order order = orderRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new OrderNotFoundException(AppConstants.ORDER_NOT_FOUND_MESSAGE));
+
+
+        order.setApproved(true);
+        orderRepository.save(order);
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setName(order.getName());
+        orderDto.setComment(order.getComment());
+        orderDto.setCustomerId(order.getCustomer().getId());
+
+        return orderDto;
     }
 }

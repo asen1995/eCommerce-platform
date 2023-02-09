@@ -20,4 +20,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query(value = SqlConstants.GET_ORDERS_CONTAINING_STRING_FOR_LOGGED_USER, nativeQuery = true)
     Optional<List<Order>> findOrdersContainingSearchStringForLoggedUser(@Param("search") String search,@Param("username")  String username);
+
+
+    @Query(value = SqlConstants.GET_ORDER_BY_ID_FOR_UPDATE, nativeQuery = true)
+    Optional<Order> findByIdForUpdate(@Param("id") Integer id);
+
 }
