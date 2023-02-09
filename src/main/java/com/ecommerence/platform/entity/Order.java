@@ -1,5 +1,6 @@
 package com.ecommerence.platform.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
+    @JsonManagedReference
     private List<Product> products;
 
     @ManyToOne

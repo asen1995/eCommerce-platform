@@ -21,4 +21,10 @@ public class AppConstants {
     public static final String CUSTOMER_PASSWORD_IS_MANDATORY_MESSAGE = "Customer password is mandatory";
     public static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer not found";
     public static final String ORDER_NOT_FOUND_MESSAGE = "Order not found";
+    public static final String ORDER_NAME_IS_MANDATORY_MESSAGE = "Order name is mandatory";
+    public static final String ORDER_NAME_SIZE_VALIDATION_ERROR_MESSAGE = "Order name must be between 3 and 50 characters";
+    public static final String ORDER_COMMENT_IS_MANDATORY_MESSAGE = "Order comment is mandatory";
+    public static final String ORDER_COMMENT_SIZE_VALIDATION_ERROR_MESSAGE = "Order comment must be between 20 and 250 characters";
+    public static final String ORDER_MUST_CONTAIN_AT_LEAST_ONE_PRODUCT_MESSAGE = "Order must contain at least one product";
+    public static final String CUSTOMER_ID_CANNOT_BE_NULL_MESSAGE = "Customer id cannot be null";
 }
