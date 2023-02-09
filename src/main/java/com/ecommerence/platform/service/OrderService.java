@@ -71,7 +71,7 @@ public class OrderService {
         }
     }
 
-    public OrderDto placeOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
+    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
 
         Customer customer = customerRepository.findById(orderDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
