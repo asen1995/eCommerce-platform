@@ -56,7 +56,7 @@ public class OrderController {
     }
 
     @PutMapping("/approve/{id}")
-    public ResponseEntity<OrderDto> approve(@PathVariable("id") Integer id) throws OrderNotFoundException {
+    public ResponseEntity<OrderDto> approve(@PathVariable("id") Integer id) throws Exception {
 
         OrderDto orderDto = orderService.approveOrder(id);
 
