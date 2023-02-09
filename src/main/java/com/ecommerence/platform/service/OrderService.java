@@ -76,7 +76,7 @@ public class OrderService {
         }
     }
 
-    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
+    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
 
         Customer customer = customerRepository.findById(orderDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
@@ -90,8 +90,19 @@ public class OrderService {
         List<OrderProduct> products = new ArrayList<>();
         for (ProductQuantityPairDto pair : orderDto.getProductQuantityPairDtoList()) {
 
+            Product product = productRepository.findById(pair.getProductId())
+                    .orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId())));
+
+            if (product.getQuantity() < pair.getQuantity()) {
+                throw new ProductQuantityNotEnoughException(
+                        String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
+                                pair.getQuantity(),
+                                product.getName(),
+                                product.getQuantity()));
+            }
+
             OrderProduct orderProduct = new OrderProduct();
-            orderProduct.setProduct(productRepository.findById(pair.getProductId()).orElseThrow(() -> new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE)));
+            orderProduct.setProduct(product);
             orderProduct.setQuantity(pair.getQuantity());
             orderProduct.setOrder(order);
 
@@ -113,6 +124,12 @@ public class OrderService {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
+
+            orderDto.setProductQuantityPairDtoList(
+                    order.getOrderProducts().stream().map(
+                            orderProduct -> new ProductQuantityPairDto(orderProduct.getProduct().getId(), orderProduct.getQuantity())
+                    ).collect(Collectors.toList()));
+
             orderDto.setCustomerId(order.getCustomer().getId());
             return orderDto;
         }).collect(Collectors.toList());
@@ -122,7 +139,7 @@ public class OrderService {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search,username).get().stream().map(order -> {
+        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search, username).get().stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
