@@ -52,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         if(!jwtSecurityEnabled) {
-            http.authorizeRequests().anyRequest().permitAll();
+            http.cors().and().csrf().disable().authorizeRequests()
+                    .anyRequest().permitAll();
             return;
         }
 
