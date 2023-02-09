@@ -1,7 +1,9 @@
 package com.ecommerence.platform.entity;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -44,6 +46,7 @@ public class Product {
 
 
     @ManyToMany(mappedBy = "products")
+    @JsonBackReference
     private List<Order> orders;
 
     @Temporal(TemporalType.DATE)
