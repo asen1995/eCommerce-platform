@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -37,7 +38,8 @@ public class OrderService {
     }
 
 
-    @Transactional(isolation = Isolation.READ_COMMITTED) //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
@@ -54,7 +56,7 @@ public class OrderService {
 
             OrderResponse orderResponse =
                     new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
-                    ,product);
+                            , product);
 
             return orderResponse;
 
@@ -75,11 +77,11 @@ public class OrderService {
 
         List<Product> products = new ArrayList<>();
 
-        for (Integer id : orderDto.getProductIds()){
+        for (Integer id : orderDto.getProductIds()) {
             products.add(productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE)));
         }
 
-        Order order  = new Order();
+        Order order = new Order();
         order.setName(orderDto.getName());
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
@@ -90,4 +92,15 @@ public class OrderService {
 
         return orderDto;
     }
+
+    public List<OrderDto> orderGlobalSearch(String search) {
+        return orderRepository.findOrdersGloballyContainingSearchString(search).get().stream().map(order -> {
+            OrderDto orderDto = new OrderDto();
+            orderDto.setName(order.getName());
+            orderDto.setComment(order.getComment());
+            orderDto.setCustomerId(order.getCustomer().getId());
+            return orderDto;
+        }).collect(Collectors.toList());
+    }
+
 }

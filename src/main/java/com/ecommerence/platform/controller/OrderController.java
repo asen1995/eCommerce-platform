@@ -6,10 +6,9 @@ import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class OrderController {
@@ -43,6 +42,15 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderDto);
+    }
+
+
+    @GetMapping("/v1/products/orders")
+    public ResponseEntity<List<OrderDto>> orderGlobalSearch(@RequestParam(value = "search") String search) {
+
+        List<OrderDto> orderDtoList = orderService.orderGlobalSearch(search);
+
+        return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 
 }
