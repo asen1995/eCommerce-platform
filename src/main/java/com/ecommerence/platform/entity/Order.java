@@ -2,6 +2,8 @@ package com.ecommerence.platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Data
+@ToString(exclude = {"orderProducts", "customer"})
+@EqualsAndHashCode(exclude = {"orderProducts", "customer"})
 public class Order {
 
     @Id
@@ -24,14 +28,9 @@ public class Order {
     private String comment;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "orders_products",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @OneToMany(mappedBy = "order")
     @JsonManagedReference
-    private List<Product> products;
+    private List<OrderProduct> orderProducts;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")

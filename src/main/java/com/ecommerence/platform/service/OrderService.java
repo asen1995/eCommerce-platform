@@ -2,14 +2,17 @@ package com.ecommerence.platform.service;
 
 import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.dto.OrderDto;
+import com.ecommerence.platform.dto.ProductQuantityPairDto;
 import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.entity.Order;
+import com.ecommerence.platform.entity.OrderProduct;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.CustomerNotFoundException;
 import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.repository.CustomerRepository;
+import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
@@ -31,12 +34,14 @@ public class OrderService {
 
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
-    public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository
-    ) {
+    public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository,
+                        OrderProductRepository orderProductRepository) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
 
@@ -77,20 +82,28 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
 
 
-        List<Product> products = new ArrayList<>();
-
-        for (Integer id : orderDto.getProductIds()) {
-            products.add(productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE)));
-        }
-
         Order order = new Order();
         order.setName(orderDto.getName());
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
-        order.setProducts(products);
+
+        List<OrderProduct> products = new ArrayList<>();
+        for (ProductQuantityPairDto pair : orderDto.getProductQuantityPairDtoList()) {
+
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setProduct(productRepository.findById(pair.getProductId()).orElseThrow(() -> new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE)));
+            orderProduct.setQuantity(pair.getQuantity());
+            orderProduct.setOrder(order);
+
+            products.add(orderProduct);
+
+        }
+
+        order.setOrderProducts(products);
         order.setCreatedDate(new Date());
 
         orderRepository.save(order);
+        orderProductRepository.saveAll(products);
 
         return orderDto;
     }
