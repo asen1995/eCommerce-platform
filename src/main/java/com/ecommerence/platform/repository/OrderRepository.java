@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query(value = SqlConstants.GET_ORDERS_CONTAINING_STRING, nativeQuery = true)
     Optional<List<Order>> findOrdersGloballyContainingSearchString(@Param("search") String search);
 
+    @Query(value = SqlConstants.GET_ORDERS_CONTAINING_STRING_FOR_LOGGED_USER, nativeQuery = true)
+    Optional<List<Order>> findOrdersContainingSearchStringForLoggedUser(@Param("search") String search,@Param("username")  String username);
 }

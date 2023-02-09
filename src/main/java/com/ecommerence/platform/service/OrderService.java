@@ -12,6 +12,7 @@ import com.ecommerence.platform.repository.CustomerRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,4 +104,17 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    public List<OrderDto> orderSearchForLoggedUser(String search) {
+
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search,username).get().stream().map(order -> {
+            OrderDto orderDto = new OrderDto();
+            orderDto.setName(order.getName());
+            orderDto.setComment(order.getComment());
+            orderDto.setCustomerId(order.getCustomer().getId());
+            return orderDto;
+        }).collect(Collectors.toList());
+
+    }
 }

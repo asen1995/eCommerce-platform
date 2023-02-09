@@ -13,4 +13,14 @@ public class SqlConstants {
             "  Customer.customer_last_name LIKE  '%' || :search || '%'  OR\n" +
             "  Orders.id LIKE  '%' || :search || '%'  OR\n" +
             "  Orders.order_comment LIKE  '%' || :search || '%' \n";
+    public static final String GET_ORDERS_CONTAINING_STRING_FOR_LOGGED_USER = "SELECT *\n" +
+            "FROM Orders \n" +
+            "JOIN Customer ON orders.customer_id = customer.id\n" +
+            "WHERE\n" +
+            "  ( Customer.customer_username = :username ) AND (\n" +
+            "  Customer.customer_username LIKE  '%' || :search || '%' OR\n" +
+            "  Customer.customer_first_name LIKE  '%' || :search || '%'  OR\n" +
+            "  Customer.customer_last_name LIKE  '%' || :search || '%'  OR\n" +
+            "  Orders.id LIKE  '%' || :search || '%'  OR\n" +
+            "  Orders.order_comment LIKE  '%' || :search || '%' )";
 }
