@@ -127,7 +127,12 @@ public class OrderService {
 
             orderDto.setProductQuantityPairDtoList(
                     order.getOrderProducts().stream().map(
-                            orderProduct -> new ProductQuantityPairDto(orderProduct.getProduct().getId(), orderProduct.getQuantity())
+                            orderProduct -> {
+                                ProductQuantityPairDto pairDto = new ProductQuantityPairDto();
+                                pairDto.setProductId(orderProduct.getProduct().getId());
+                                pairDto.setQuantity(orderProduct.getQuantity());
+                                return pairDto;
+                            }
                     ).collect(Collectors.toList()));
 
             orderDto.setCustomerId(order.getCustomer().getId());
