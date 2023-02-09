@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "product", uniqueConstraints = {
@@ -40,6 +41,10 @@ public class Product {
     @Min(value = 0, message = AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE)
     @Column(name = "product_quantity")
     private Integer quantity;
+
+
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_date", updatable = false)

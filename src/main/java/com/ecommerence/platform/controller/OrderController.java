@@ -1,13 +1,15 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.dto.OrderDto;
+import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class OrderController {
@@ -31,5 +33,33 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(orderResponse);
+    }
+
+    @PostMapping("/v1/products/order")
+    public ResponseEntity<OrderDto> placeOrder(@RequestBody OrderDto order) throws Exception {
+
+        OrderDto orderDto = orderService.placeOrder(order);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(orderDto);
+    }
+
+
+    @GetMapping("/v1/products/orders")
+    public ResponseEntity<List<OrderDto>> orderGlobalSearch(@RequestParam(value = "search") String search) {
+
+        List<OrderDto> orderDtoList = orderService.orderGlobalSearch(search);
+
+        return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
+    }
+
+    @PutMapping("/v1/products/orders/approve/{id}")
+    public ResponseEntity<OrderDto> approve(@PathVariable("id") Integer id) throws OrderNotFoundException {
+
+        OrderDto orderDto = orderService.approveOrder(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(orderDto);
     }
 }

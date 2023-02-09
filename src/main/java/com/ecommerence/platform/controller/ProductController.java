@@ -1,5 +1,6 @@
 package com.ecommerence.platform.controller;
 
+import com.ecommerence.platform.dto.ProductDto;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -36,9 +37,9 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
+    public ResponseEntity<ProductDto> create(@Valid @RequestBody ProductDto productDto) {
 
-        Product createdProduct = productService.createProduct(product);
+        ProductDto createdProduct = productService.createProduct(productDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createdProduct);

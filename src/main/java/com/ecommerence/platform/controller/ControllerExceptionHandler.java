@@ -1,6 +1,7 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.model.ErrorMessage;
@@ -32,8 +33,8 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new ErrorMessage(AppConstants.PAIR_OF_PRODUCT_CATEGORY_SHOULD_BE_UNIQUE_ERROR_MESSAGE, new Date()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleProductNotFound(ProductNotFoundException e) {
+    @ExceptionHandler({ProductNotFoundException.class, OrderNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handleProductNotFound(Exception e) {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.NOT_FOUND);
     }
 
