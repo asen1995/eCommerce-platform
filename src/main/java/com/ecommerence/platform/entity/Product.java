@@ -37,9 +37,9 @@ public class Product {
     @Column(name = "product_quantity")
     private Integer quantity;
 
-    @ManyToMany(mappedBy = "products")
+    @OneToMany(mappedBy = "product")
     @JsonBackReference
-    private List<Order> orders;
+    private List<OrderProduct> orderProducts;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_date", updatable = false)

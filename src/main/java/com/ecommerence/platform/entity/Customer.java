@@ -2,6 +2,8 @@ package com.ecommerence.platform.entity;
 
 import com.ecommerence.platform.constants.AppConstants;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -15,6 +17,8 @@ import java.util.List;
                 @UniqueConstraint(columnNames = {"customer_username"})
         })
 @Data
+@ToString(exclude = {"orders"})
+@EqualsAndHashCode(exclude = {"orders"})
 public class Customer {
 
     @Id

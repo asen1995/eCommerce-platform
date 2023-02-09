@@ -2,14 +2,14 @@ package com.ecommerence.platform.service;
 
 import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.dto.OrderDto;
+import com.ecommerence.platform.dto.ProductQuantityPairDto;
 import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.entity.Order;
+import com.ecommerence.platform.entity.OrderProduct;
 import com.ecommerence.platform.entity.Product;
-import com.ecommerence.platform.exception.CustomerNotFoundException;
-import com.ecommerence.platform.exception.OrderNotFoundException;
-import com.ecommerence.platform.exception.ProductNotFoundException;
-import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
+import com.ecommerence.platform.exception.*;
 import com.ecommerence.platform.repository.CustomerRepository;
+import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
@@ -31,12 +31,14 @@ public class OrderService {
 
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
-    public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository
-    ) {
+    public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository,
+                        OrderProductRepository orderProductRepository) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
 
@@ -71,26 +73,45 @@ public class OrderService {
         }
     }
 
-    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException {
+    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
 
         Customer customer = customerRepository.findById(orderDto.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
 
 
-        List<Product> products = new ArrayList<>();
-
-        for (Integer id : orderDto.getProductIds()) {
-            products.add(productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE)));
-        }
-
         Order order = new Order();
         order.setName(orderDto.getName());
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
-        order.setProducts(products);
+
+        List<OrderProduct> products = new ArrayList<>();
+        for (ProductQuantityPairDto pair : orderDto.getProductQuantityPairDtoList()) {
+
+            Product product = productRepository.findById(pair.getProductId())
+                    .orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId())));
+
+            if (product.getQuantity() < pair.getQuantity()) {
+                throw new ProductQuantityNotEnoughException(
+                        String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
+                                pair.getQuantity(),
+                                product.getName(),
+                                product.getQuantity()));
+            }
+
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setProduct(product);
+            orderProduct.setQuantity(pair.getQuantity());
+            orderProduct.setOrder(order);
+
+            products.add(orderProduct);
+
+        }
+
+        order.setOrderProducts(products);
         order.setCreatedDate(new Date());
 
         orderRepository.save(order);
+        orderProductRepository.saveAll(products);
 
         return orderDto;
     }
@@ -100,6 +121,17 @@ public class OrderService {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
+
+            orderDto.setProductQuantityPairDtoList(
+                    order.getOrderProducts().stream().map(
+                            orderProduct -> {
+                                ProductQuantityPairDto pairDto = new ProductQuantityPairDto();
+                                pairDto.setProductId(orderProduct.getProduct().getId());
+                                pairDto.setQuantity(orderProduct.getQuantity());
+                                return pairDto;
+                            }
+                    ).collect(Collectors.toList()));
+
             orderDto.setCustomerId(order.getCustomer().getId());
             return orderDto;
         }).collect(Collectors.toList());
@@ -109,7 +141,7 @@ public class OrderService {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search,username).get().stream().map(order -> {
+        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search, username).get().stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
@@ -120,11 +152,21 @@ public class OrderService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public OrderDto approveOrder(Integer id) throws OrderNotFoundException {
+    public OrderDto approveOrder(Integer id) throws Exception {
 
         Order order = orderRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new OrderNotFoundException(AppConstants.ORDER_NOT_FOUND_MESSAGE));
 
+
+        if (Boolean.FALSE.equals(order.getApproved()))
+            throw new OrderHaveBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
+
+        if (Boolean.TRUE.equals(order.getApproved()))
+            throw new OrderHaveAlreadyBeenApprovedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_APPROVED_MESSAGE_TEMPLATE, id));
+
+        //check if createdDate is older than 10 minutes
+        if (order.getCreatedDate().getTime() < System.currentTimeMillis() - 10 * 60 * 1000)
+            throw new OrderCannotBeApprovedException(String.format(AppConstants.ORDER_WITH_ID_CANNOT_BE_APPROVED_MESSAGE_TEMPLATE, id));
 
         order.setApproved(true);
         orderRepository.save(order);

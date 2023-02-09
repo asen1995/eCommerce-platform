@@ -1,9 +1,7 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
-import com.ecommerence.platform.exception.OrderNotFoundException;
-import com.ecommerence.platform.exception.ProductNotFoundException;
-import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
+import com.ecommerence.platform.exception.*;
 import com.ecommerence.platform.model.ErrorMessage;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -34,12 +32,16 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler({ProductNotFoundException.class, OrderNotFoundException.class})
-    public ResponseEntity<ErrorMessage> handleProductNotFound(Exception e) {
+    public ResponseEntity<ErrorMessage> handleNotFound(Exception e) {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler({OrderHaveAlreadyBeenApprovedException.class})
+    public ResponseEntity<ErrorMessage> handleOrderHaveAlreadyBeenApprovedException(Exception e) {
+        return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.OK);
+    }
 
-    @ExceptionHandler(ProductQuantityNotEnoughException.class)
-    public ResponseEntity<ErrorMessage> handleProductQuantityNotEnoughException(ProductQuantityNotEnoughException e) {
+    @ExceptionHandler({ProductQuantityNotEnoughException.class, OrderHaveBeenDeclinedException.class, OrderCannotBeApprovedException.class})
+    public ResponseEntity<ErrorMessage> handleProductQuantityNotEnoughException(Exception e) {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.BAD_REQUEST);
     }
 }
