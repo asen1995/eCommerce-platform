@@ -24,6 +24,6 @@ public class OrderDto {
     private List<ProductQuantityPairDto> productQuantityPairDtoList;
 
     @NotNull(message = AppConstants.CUSTOMER_ID_CANNOT_BE_NULL_MESSAGE)
-    private Integer customerId;
+    private Integer customerId;//TODO use the logged in user id
 
 }

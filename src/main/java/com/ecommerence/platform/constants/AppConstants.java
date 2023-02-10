@@ -30,4 +30,14 @@ public class AppConstants {
     public static final String ORDER_WITH_ID_HAVE_BEEN_DECLINED_MESSAGE_TEMPLATE = "Order with id %d have been declined";
     public static final String ORDER_WITH_ID_CANNOT_BE_APPROVED_MESSAGE_TEMPLATE = "Order with id %d cannot be approved";
     public static final String ORDER_WITH_ID_HAVE_ALREADY_BEEN_APPROVED_MESSAGE_TEMPLATE = "Order with id %d have already been approved";
+    public static final String PRODUCT_ID_IS_MANDATORY_MESSAGE = "Product id is mandatory";
+    public static final String USERNAME_IS_MANDATORY_MESSAGE = "Username is mandatory";
+    public static final String USERNAME_SIZE_VALIDATION_ERROR_MESSAGE = "Username must be between 3 and 50 characters";
+    public static final String PASSWORD_IS_MANDATORY_MESSAGE = "Password is mandatory";
+    public static final String PASSWORD_SIZE_VALIDATION_ERROR_MESSAGE = "Password must be between 3 and 50 characters";
+    public static final String EMAIL_VALIDATION_FORMAT_ERROR_MESSAGE = "Email is not valid";
+    public static final String FIRST_NAME_IS_MANDATORY_MESSAGE = "First name is mandatory";
+    public static final String LAST_NAME_IS_MANDATORY_MESSAGE = "Last name is mandatory";
+    public static final String FIRST_NAME_SIZE_VALIDATION_ERROR_MESSAGE = "First name must be between 2 and 50 characters";
+    public static final String LAST_NAME_SIZE_VALIDATION_ERROR_MESSAGE = "Last name must be between 2 and 50 characters";
 }
