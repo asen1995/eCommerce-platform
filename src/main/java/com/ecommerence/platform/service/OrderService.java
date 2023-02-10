@@ -75,7 +75,9 @@ public class OrderService {
 
     public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
 
-        Customer customer = customerRepository.findById(orderDto.getCustomerId())
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
 
 
@@ -132,7 +134,6 @@ public class OrderService {
                             }
                     ).collect(Collectors.toList()));
 
-            orderDto.setCustomerId(order.getCustomer().getId());
             return orderDto;
         }).collect(Collectors.toList());
     }
@@ -145,7 +146,6 @@ public class OrderService {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
-            orderDto.setCustomerId(order.getCustomer().getId());
             return orderDto;
         }).collect(Collectors.toList());
 
@@ -174,7 +174,6 @@ public class OrderService {
         OrderDto orderDto = new OrderDto();
         orderDto.setName(order.getName());
         orderDto.setComment(order.getComment());
-        orderDto.setCustomerId(order.getCustomer().getId());
 
         return orderDto;
     }
