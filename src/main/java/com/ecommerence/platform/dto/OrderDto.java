@@ -23,7 +23,4 @@ public class OrderDto {
     @NotEmpty(message = AppConstants.ORDER_MUST_CONTAIN_AT_LEAST_ONE_PRODUCT_MESSAGE)
     private List<ProductQuantityPairDto> productQuantityPairDtoList;
 
-    @NotNull(message = AppConstants.CUSTOMER_ID_CANNOT_BE_NULL_MESSAGE)
-    private Integer customerId;
-
 }
