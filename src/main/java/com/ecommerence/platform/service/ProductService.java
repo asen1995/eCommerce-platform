@@ -48,18 +48,19 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Product updateProduct(Integer id, Product product) throws ProductNotFoundException {
+    public ProductDto updateProduct(Integer id, ProductDto productDto) throws ProductNotFoundException {
 
-        if(!productRepository.existsById(id) ){
-           throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, id));
-        }
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, id)));
 
-        product.setId(id);
+        product.setName(productDto.getName());
+        product.setCategory(productDto.getCategory());
+        product.setDescription(productDto.getDescription());
+        product.setQuantity(productDto.getQuantity());
         product.setUpdatedDate(new Date());
 
         productRepository.save(product);
 
-        return product;
+        return productDto;
     }
 
     public ProductsResponse getProducts(ProductOrderEnum orderBy, DirectionEnum direction, Integer page, Integer pageSize) {

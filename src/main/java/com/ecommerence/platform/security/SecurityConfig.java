@@ -1,10 +1,9 @@
 package com.ecommerence.platform.security;
 
 import com.ecommerence.platform.service.CustomerUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,9 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.validation.Valid;
-
 @EnableWebSecurity
+@Profile("dev")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${app.jwt.auth.whitelist}")

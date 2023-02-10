@@ -10,8 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(OrderController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@TestPropertySource(locations="classpath:application-test.properties")
 public class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +55,7 @@ public class OrderControllerTest {
         String expected = objectMapper.writeValueAsString(new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderQuantity, product.getName())
                 ,product));
 
-        mockMvc.perform(post("/v1/products/1/order/2"))
+        mockMvc.perform(post("/v1/orders/1/order/2"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
@@ -61,7 +65,7 @@ public class OrderControllerTest {
     public void testOrderProduct_throwProductNotFound() throws Exception {
         when(orderService.orderProduct(anyInt(), anyInt())).thenThrow(ProductNotFoundException.class);
 
-        mockMvc.perform(post("/v1/products/1/order/2"))
+        mockMvc.perform(post("/v1/orders/1/order/2"))
                 .andExpect(status().isNotFound());
     }
 
@@ -69,7 +73,7 @@ public class OrderControllerTest {
     public void testOrderProduct_throwProductQuantityNotEnoughException() throws Exception {
         when(orderService.orderProduct(anyInt(), anyInt())).thenThrow(ProductQuantityNotEnoughException.class);
 
-        mockMvc.perform(post("/v1/products/1/order/2"))
+        mockMvc.perform(post("/v1/orders/1/order/2"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -79,7 +83,7 @@ public class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String expected = objectMapper.writeValueAsString(new OrderResponse(AppConstants.QTY_MUST_BE_GREATER_THAN_ZERO_MESSAGE, null));
 
-        mockMvc.perform(post("/v1/products/1/order/-2"))
+        mockMvc.perform(post("/v1/orders/1/order/-2"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json(expected));
     }
