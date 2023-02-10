@@ -19,23 +19,9 @@ import javax.validation.Valid;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] AUTH_WHITELIST = {
-            // -- Swagger UI v2
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            // -- Swagger UI v3 (OpenAPI)
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/login",
-            "/v1/customers/register",
-            "/authenticate"
-            // other public endpoints of your API may be appended to this array
-    };
+
+    @Value("${app.jwt.auth.whitelist}")
+    private String[] authWhitelist;
 
     private final CustomerUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -59,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(authWhitelist).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
