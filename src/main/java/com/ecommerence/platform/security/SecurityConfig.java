@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/login",
-            "/register",
+            "/v1/customers/register",
             "/authenticate"
             // other public endpoints of your API may be appended to this array
     };
