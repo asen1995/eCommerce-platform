@@ -1,6 +1,6 @@
 package com.ecommerence.platform.controller;
 
-import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.dto.ProductDto;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -11,10 +11,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
+@TestPropertySource(locations="classpath:application-test.properties")
 public class ProductControllerTest {
 
     @Autowired
@@ -37,16 +43,15 @@ public class ProductControllerTest {
     @MockBean
     private ProductService productService;
 
-    private Product product;
+    private ProductDto productDto;
 
     @Before
     public void setUp() {
-        product = new Product();
-        product.setId(1);
-        product.setName("Test Product");
-        product.setCategory("Monitor");
-        product.setDescription("Monitor for testing");
-        product.setQuantity(4);
+        productDto = new ProductDto();
+        productDto.setName("Test Product");
+        productDto.setCategory("Monitor");
+        productDto.setDescription("Monitor for testing");
+        productDto.setQuantity(4);
     }
 
 
@@ -54,7 +59,6 @@ public class ProductControllerTest {
     @Test
     public void testGetAllProducts() throws Exception {
         Product product = new Product();
-        product.setId(1);
         product.setName("Test Product");
         product.setCategory("Monitor");
         product.setDescription("Monitor for testing");
@@ -85,10 +89,10 @@ public class ProductControllerTest {
     @Test
     public void testCreateProduct() throws Exception {
 
-        when(productService.createProduct(any(Product.class))).thenReturn(product);
+        when(productService.createProduct(any(ProductDto.class))).thenReturn(productDto);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(product);
+        String json = mapper.writeValueAsString(productDto);
 
         mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,10 +103,10 @@ public class ProductControllerTest {
 
     @Test
     public void testUpdateProduct() throws Exception {
-        when(productService.updateProduct(anyInt(), any(Product.class))).thenReturn(product);
+        when(productService.updateProduct(anyInt(), any(ProductDto.class))).thenReturn(productDto);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(product);
+        String json = mapper.writeValueAsString(productDto);
 
         mockMvc.perform(put("/v1/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,10 +124,10 @@ public class ProductControllerTest {
 
     @Test
     public void testCreateProduct_throwDataIntegrityViolationException() throws Exception {
-        when(productService.createProduct(product)).thenThrow(DataIntegrityViolationException.class);
+        when(productService.createProduct(productDto)).thenThrow(DataIntegrityViolationException.class);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(product);
+        String json = mapper.writeValueAsString(productDto);
 
         mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,10 +137,10 @@ public class ProductControllerTest {
 
     @Test
     public void testCreateProduct_throwGeneralException() throws Exception {
-        when(productService.createProduct(product)).thenThrow(IllegalArgumentException.class);
+        when(productService.createProduct(productDto)).thenThrow(IllegalArgumentException.class);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(product);
+        String json = mapper.writeValueAsString(productDto);
 
         mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)

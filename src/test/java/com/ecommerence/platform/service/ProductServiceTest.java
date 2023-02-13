@@ -1,5 +1,6 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.dto.ProductDto;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
@@ -15,9 +16,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +30,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductService.class)
+@ActiveProfiles("test")
 public class ProductServiceTest {
     @Autowired
     private ProductService productService;
@@ -97,8 +101,15 @@ public class ProductServiceTest {
 
     @Test
     public void testCreateProduct() {
-        Product resultProduct = productService.createProduct(product);
-        assertEquals(product, resultProduct);
+
+        ProductDto productDto = new ProductDto();
+        productDto.setName("Dell monitor");
+        productDto.setCategory("Monitor");
+        productDto.setQuantity(10);
+        productDto.setDescription("Monitor for testing");
+
+        ProductDto resultProduct = productService.createProduct(productDto);
+        assertEquals(productDto, resultProduct);
     }
 
 
@@ -118,15 +129,29 @@ public class ProductServiceTest {
 
     @Test
     public void testUpdateProduct() throws ProductNotFoundException {
-        when(productRepository.existsById(anyInt())).thenReturn(true);
-        Product result = productService.updateProduct(1, product);
-        assertEquals(product, result);
+
+        ProductDto productDto = new ProductDto();
+        productDto.setName("Dell monitor");
+        productDto.setCategory("Monitor");
+        productDto.setQuantity(10);
+        productDto.setDescription("Monitor for testing");
+
+        when(productRepository.findById(anyInt())).thenReturn(Optional.ofNullable(product));
+        ProductDto result = productService.updateProduct(1, productDto);
+        assertEquals(productDto, result);
     }
 
     @Test(expected = ProductNotFoundException.class)
     public void testUpdateNonExistingProduct() throws ProductNotFoundException {
+
+        ProductDto productDto = new ProductDto();
+        productDto.setName("Dell monitor");
+        productDto.setCategory("Monitor");
+        productDto.setQuantity(10);
+        productDto.setDescription("Monitor for testing");
+
         when(productRepository.existsById(anyInt())).thenReturn(false);
-        Product result = productService.updateProduct(1, product);
+        ProductDto result = productService.updateProduct(1, productDto);
         assertEquals(product, result);
     }
 }
