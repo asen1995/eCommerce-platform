@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 public class CategoryServiceTest {
     @Autowired
-    private CategoryService categoryService;
+    private ICategoryService categoryService;
 
     @MockBean
     private ProductRepository productRepository;

@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderService {
+public class OrderService implements IOrderService {
 
     private final ProductRepository productRepository;
 
@@ -42,6 +42,7 @@ public class OrderService {
     }
 
 
+    @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
@@ -73,6 +74,7 @@ public class OrderService {
         }
     }
 
+    @Override
     public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -118,6 +120,7 @@ public class OrderService {
         return orderDto;
     }
 
+    @Override
     public List<OrderDto> orderGlobalSearch(String search) {
         return orderRepository.findOrdersGloballyContainingSearchString(search).get().stream().map(order -> {
             OrderDto orderDto = new OrderDto();
@@ -138,6 +141,7 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public List<OrderDto> orderSearchForLoggedUser(String search) {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -151,6 +155,7 @@ public class OrderService {
 
     }
 
+    @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public OrderDto approveOrder(Integer id) throws Exception {
 

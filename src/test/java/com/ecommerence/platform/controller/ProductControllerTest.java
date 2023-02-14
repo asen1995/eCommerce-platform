@@ -5,7 +5,7 @@ import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
 import com.ecommerence.platform.response.ProductsResponse;
-import com.ecommerence.platform.service.ProductService;
+import com.ecommerence.platform.service.IProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ProductService productService;
+    private IProductService productService;
 
     private ProductDto productDto;
 

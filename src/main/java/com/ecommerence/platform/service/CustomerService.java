@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class CustomerService {
+public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
 
@@ -20,6 +20,7 @@ public class CustomerService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public CustomerDto register(CustomerDto customerDto) {
 
         Customer customer = new Customer();

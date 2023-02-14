@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 public class OrderServiceTest {
     @Autowired
-    private OrderService orderService;
+    private IOrderService orderService;
     @MockBean
     private ProductRepository productRepository;
 
