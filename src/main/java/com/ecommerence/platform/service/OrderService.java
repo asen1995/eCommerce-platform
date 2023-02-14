@@ -1,6 +1,7 @@
 package com.ecommerence.platform.service;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.constants.RsqlConstants;
 import com.ecommerence.platform.dto.OrderDto;
 import com.ecommerence.platform.dto.ProductQuantityPairDto;
 import com.ecommerence.platform.entity.Customer;
@@ -13,6 +14,10 @@ import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
+import com.ecommerence.platform.rsql.CustomRsqlVisitor;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -120,7 +125,11 @@ public class OrderService implements IOrderService {
 
     @Override
     public List<OrderDto> orderGlobalSearch(String search) {
-        return orderRepository.findOrdersGloballyContainingSearchString(search).get().stream().map(order -> {
+
+        Node rootNode = new RSQLParser().parse(RsqlConstants.ORDER_GLOBAL_SEARCH_RSQL_QUERY.replace("searchString", search));
+        Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
+
+        return orderRepository.findAll(spec).stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
@@ -144,7 +153,13 @@ public class OrderService implements IOrderService {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search, username).get().stream().map(order -> {
+        Node rootNode = new RSQLParser().parse(
+                RsqlConstants.ORDER_GLOBAL_SEARCH_FOR_LOGGED_USER_RSQL_QUERY
+                        .replace("searchString", search)
+                        .replace("loggedUsername", username));
+        Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
+
+        return orderRepository.findAll(spec).stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
