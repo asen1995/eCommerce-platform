@@ -75,13 +75,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
+    public OrderDto createOrder(OrderDto orderDto) throws ProductNotFoundException, ProductQuantityNotEnoughException {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Customer customer = customerRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
-
+        Customer customer = customerRepository.findByUsername(username).get();
 
         Order order = new Order();
         order.setName(orderDto.getName());
