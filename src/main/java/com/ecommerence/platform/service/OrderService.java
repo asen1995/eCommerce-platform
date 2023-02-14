@@ -164,14 +164,14 @@ public class OrderService implements IOrderService {
 
 
         if (Boolean.FALSE.equals(order.getApproved()))
-            throw new OrderHaveBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
+            throw new OrderHaveAlreadyBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
 
         if (Boolean.TRUE.equals(order.getApproved()))
             throw new OrderHaveAlreadyBeenApprovedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_APPROVED_MESSAGE_TEMPLATE, id));
 
         //check if createdDate is older than 10 minutes
         if (order.getCreatedDate().getTime() < System.currentTimeMillis() - 10 * 60 * 1000)
-            throw new OrderCannotBeApprovedException(String.format(AppConstants.ORDER_WITH_ID_CANNOT_BE_APPROVED_MESSAGE_TEMPLATE, id));
+            throw new OrderHaveAlreadyBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
 
         order.setApproved(true);
         orderRepository.save(order);

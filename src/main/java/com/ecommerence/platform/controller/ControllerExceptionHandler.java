@@ -40,7 +40,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.OK);
     }
 
-    @ExceptionHandler({ProductQuantityNotEnoughException.class, OrderHaveBeenDeclinedException.class, OrderCannotBeApprovedException.class})
+    @ExceptionHandler({ProductQuantityNotEnoughException.class, OrderHaveAlreadyBeenDeclinedException.class})
     public ResponseEntity<ErrorMessage> handleProductQuantityNotEnoughException(Exception e) {
         return new ResponseEntity<>(new ErrorMessage(e.getMessage(), new Date()), HttpStatus.BAD_REQUEST);
     }

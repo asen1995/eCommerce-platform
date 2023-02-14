@@ -187,7 +187,7 @@ public class OrderServiceTest {
         orderService.approveOrder(1);
     }
 
-    @Test(expected = OrderHaveBeenDeclinedException.class)
+    @Test(expected = OrderHaveAlreadyBeenDeclinedException.class)
     public void testApproveOrderThatWasDeclined() throws Exception {
 
         Order order = new Order();
@@ -217,7 +217,7 @@ public class OrderServiceTest {
 
     }
 
-    @Test(expected = OrderCannotBeApprovedException.class)
+    @Test(expected = OrderHaveAlreadyBeenDeclinedException.class)
     public void testApproveOrderThatIsOlderThen10Minutes() throws Exception {
 
         Order order = new Order();
