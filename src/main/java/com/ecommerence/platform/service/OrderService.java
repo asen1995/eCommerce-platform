@@ -20,7 +20,6 @@ import cz.jirutka.rsql.parser.ast.Node;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -46,8 +45,7 @@ public class OrderService implements IOrderService {
 
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
+    @Transactional
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
@@ -184,7 +182,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public OrderDto approveOrder(Integer id) throws Exception {
 
         Order order = orderRepository.findByIdForUpdate(id)
