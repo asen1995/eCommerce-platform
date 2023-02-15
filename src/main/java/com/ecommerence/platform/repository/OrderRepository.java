@@ -14,8 +14,9 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpecificationExecutor<Order> {
     @Query(value = SqlConstants.GET_ORDERS_FOR_AUTOMATIC_DECLINE, nativeQuery = true)
-    Optional<List<Order>> findOrdersOlderThan10Minutes();
+    Optional<List<Order>> findOrdersOlderThan10MinutesForUpdate();
 
     @Query(value = SqlConstants.GET_ORDER_BY_ID_FOR_UPDATE, nativeQuery = true)
     Optional<Order> findByIdForUpdate(@Param("id") Integer id);
+
 }

@@ -23,10 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,6 +78,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto createOrder(OrderDto orderDto) throws ProductNotFoundException, ProductQuantityNotEnoughException {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -91,11 +90,23 @@ public class OrderService implements IOrderService {
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
 
-        List<OrderProduct> products = new ArrayList<>();
+        Map<Integer, Product> selectedProductEntitiesMap = productRepository
+                .findAllByIdsForUpdate(orderDto.getProductQuantityPairDtoList()
+                        .stream()
+                        .map(ProductQuantityPairDto::getProductId)
+                        .collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        List<OrderProduct> orderedProducts = new ArrayList<>();
+
         for (ProductQuantityPairDto pair : orderDto.getProductQuantityPairDtoList()) {
 
-            Product product = productRepository.findById(pair.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId())));
+            Product product = selectedProductEntitiesMap.get(pair.getProductId());
+
+            if (product == null) {
+                throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId()));
+            }
 
             if (product.getQuantity() < pair.getQuantity()) {
                 throw new ProductQuantityNotEnoughException(
@@ -105,20 +116,24 @@ public class OrderService implements IOrderService {
                                 product.getQuantity()));
             }
 
+            product.setQuantity(product.getQuantity() - pair.getQuantity());
+
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setProduct(product);
             orderProduct.setQuantity(pair.getQuantity());
             orderProduct.setOrder(order);
 
-            products.add(orderProduct);
+            orderedProducts.add(orderProduct);
 
         }
 
-        order.setOrderProducts(products);
+        order.setOrderProducts(orderedProducts);
         order.setCreatedDate(new Date());
 
         orderRepository.save(order);
-        orderProductRepository.saveAll(products);
+        orderProductRepository.saveAll(orderedProducts);
+        productRepository.saveAll(selectedProductEntitiesMap.values());
+
 
         return orderDto;
     }
