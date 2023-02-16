@@ -13,10 +13,12 @@ import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,7 +29,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
@@ -149,9 +150,7 @@ public class OrderServiceTest {
 
         order.setOrderProducts(Arrays.asList(orderProduct));
 
-
-        when(orderRepository.findOrdersGloballyContainingSearchString(anyString())).thenReturn(Optional.of(Arrays.asList(order)));
-
+        when(orderRepository.findAll((Specification) ArgumentMatchers.any())).thenReturn(Arrays.asList(order));
         List<OrderDto> ordersResponse = orderService.orderGlobalSearch("laptop");
 
         assertEquals(ordersResponse.get(0).getName(), order.getName());
