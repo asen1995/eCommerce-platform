@@ -1,12 +1,11 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.dto.ProductDto;
-import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.response.ProductsResponse;
-import com.ecommerence.platform.service.ProductService;
+import com.ecommerence.platform.service.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +16,9 @@ import javax.validation.Valid;
 @RequestMapping("/v1/products")
 public class ProductController {
 
-    private final ProductService productService;
+    private final IProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(IProductService productService) {
         this.productService = productService;
     }
 

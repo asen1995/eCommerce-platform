@@ -3,7 +3,8 @@ package com.ecommerence.platform.controller;
 import com.ecommerence.platform.dto.CustomerDto;
 import com.ecommerence.platform.dto.OrderDto;
 import com.ecommerence.platform.service.CustomerService;
-import com.ecommerence.platform.service.OrderService;
+import com.ecommerence.platform.service.ICustomerService;
+import com.ecommerence.platform.service.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,11 +41,10 @@ public class CustomerControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OrderService orderService;
+    private IOrderService orderService;
 
     @MockBean
-    private CustomerService customerService;
-
+    private ICustomerService customerService;
 
 
     @Test
