@@ -2,9 +2,8 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.dto.OrderDto;
-import com.ecommerence.platform.exception.OrderNotFoundException;
 import com.ecommerence.platform.response.OrderResponse;
-import com.ecommerence.platform.service.OrderService;
+import com.ecommerence.platform.service.IOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +15,9 @@ import java.util.List;
 @RequestMapping("/v1/orders")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(IOrderService orderService) {
         this.orderService = orderService;
     }
 

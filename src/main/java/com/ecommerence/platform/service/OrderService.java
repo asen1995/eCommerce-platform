@@ -1,6 +1,7 @@
 package com.ecommerence.platform.service;
 
 import com.ecommerence.platform.constants.AppConstants;
+import com.ecommerence.platform.constants.RsqlConstants;
 import com.ecommerence.platform.dto.OrderDto;
 import com.ecommerence.platform.dto.ProductQuantityPairDto;
 import com.ecommerence.platform.entity.Customer;
@@ -13,19 +14,20 @@ import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
+import com.ecommerence.platform.rsql.CustomRsqlVisitor;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderService {
+public class OrderService implements IOrderService {
 
     private final ProductRepository productRepository;
 
@@ -42,8 +44,8 @@ public class OrderService {
     }
 
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    //SERIALIZABLE causes the second waiting transaction to instant fail in Oracle db once the first transaction commit
+    @Override
+    @Transactional
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
@@ -73,24 +75,36 @@ public class OrderService {
         }
     }
 
-    public OrderDto createOrder(OrderDto orderDto) throws CustomerNotFoundException, ProductNotFoundException, ProductQuantityNotEnoughException {
+    @Override
+    @Transactional
+    public OrderDto createOrder(OrderDto orderDto) throws ProductNotFoundException, ProductQuantityNotEnoughException {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Customer customer = customerRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomerNotFoundException(AppConstants.CUSTOMER_NOT_FOUND_MESSAGE));
-
+        Customer customer = customerRepository.findByUsername(username).get();
 
         Order order = new Order();
         order.setName(orderDto.getName());
         order.setComment(orderDto.getComment());
         order.setCustomer(customer);
 
-        List<OrderProduct> products = new ArrayList<>();
+        Map<Integer, Product> selectedProductEntitiesMap = productRepository
+                .findAllByIdsForUpdate(orderDto.getProductQuantityPairDtoList()
+                        .stream()
+                        .map(ProductQuantityPairDto::getProductId)
+                        .collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        List<OrderProduct> orderedProducts = new ArrayList<>();
+
         for (ProductQuantityPairDto pair : orderDto.getProductQuantityPairDtoList()) {
 
-            Product product = productRepository.findById(pair.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId())));
+            Product product = selectedProductEntitiesMap.get(pair.getProductId());
+
+            if (product == null) {
+                throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId()));
+            }
 
             if (product.getQuantity() < pair.getQuantity()) {
                 throw new ProductQuantityNotEnoughException(
@@ -100,26 +114,35 @@ public class OrderService {
                                 product.getQuantity()));
             }
 
+            product.setQuantity(product.getQuantity() - pair.getQuantity());
+
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setProduct(product);
             orderProduct.setQuantity(pair.getQuantity());
             orderProduct.setOrder(order);
 
-            products.add(orderProduct);
+            orderedProducts.add(orderProduct);
 
         }
 
-        order.setOrderProducts(products);
+        order.setOrderProducts(orderedProducts);
         order.setCreatedDate(new Date());
 
         orderRepository.save(order);
-        orderProductRepository.saveAll(products);
+        orderProductRepository.saveAll(orderedProducts);
+        productRepository.saveAll(selectedProductEntitiesMap.values());
+
 
         return orderDto;
     }
 
+    @Override
     public List<OrderDto> orderGlobalSearch(String search) {
-        return orderRepository.findOrdersGloballyContainingSearchString(search).get().stream().map(order -> {
+
+        Node rootNode = new RSQLParser().parse(RsqlConstants.ORDER_GLOBAL_SEARCH_RSQL_QUERY.replace("searchString", search));
+        Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
+
+        return orderRepository.findAll(spec).stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
@@ -138,11 +161,18 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public List<OrderDto> orderSearchForLoggedUser(String search) {
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return orderRepository.findOrdersContainingSearchStringForLoggedUser(search, username).get().stream().map(order -> {
+        Node rootNode = new RSQLParser().parse(
+                RsqlConstants.ORDER_GLOBAL_SEARCH_FOR_LOGGED_USER_RSQL_QUERY
+                        .replace("searchString", search)
+                        .replace("loggedUsername", username));
+        Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
+
+        return orderRepository.findAll(spec).stream().map(order -> {
             OrderDto orderDto = new OrderDto();
             orderDto.setName(order.getName());
             orderDto.setComment(order.getComment());
@@ -151,7 +181,8 @@ public class OrderService {
 
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Override
+    @Transactional
     public OrderDto approveOrder(Integer id) throws Exception {
 
         Order order = orderRepository.findByIdForUpdate(id)
@@ -159,14 +190,14 @@ public class OrderService {
 
 
         if (Boolean.FALSE.equals(order.getApproved()))
-            throw new OrderHaveBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
+            throw new OrderHaveAlreadyBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
 
         if (Boolean.TRUE.equals(order.getApproved()))
             throw new OrderHaveAlreadyBeenApprovedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_APPROVED_MESSAGE_TEMPLATE, id));
 
         //check if createdDate is older than 10 minutes
         if (order.getCreatedDate().getTime() < System.currentTimeMillis() - 10 * 60 * 1000)
-            throw new OrderCannotBeApprovedException(String.format(AppConstants.ORDER_WITH_ID_CANNOT_BE_APPROVED_MESSAGE_TEMPLATE, id));
+            throw new OrderHaveAlreadyBeenDeclinedException(String.format(AppConstants.ORDER_WITH_ID_HAVE_ALREADY_BEEN_DECLINED_MESSAGE_TEMPLATE, id));
 
         order.setApproved(true);
         orderRepository.save(order);

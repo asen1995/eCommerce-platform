@@ -19,4 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query(value = SqlConstants.GET_DISTINCT_CATEGORIES_AND_AVAILABLE_PRODUCTS, nativeQuery = true)
     List<CategoryAvailableProducts> findProductsAvailablePerCategories();
+
+    @Query(value = SqlConstants.GET_PRODUCTS_FOR_UPDATE, nativeQuery = true)
+    List<Product> findAllByIdsForUpdate(@Param("ids") List<Integer> ids);
 }

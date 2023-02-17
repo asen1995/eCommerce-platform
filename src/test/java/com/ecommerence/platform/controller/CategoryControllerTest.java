@@ -2,7 +2,7 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.CategoryAvailableProductsMock;
 import com.ecommerence.platform.response.CategoryAvailableProducts;
-import com.ecommerence.platform.service.CategoryService;
+import com.ecommerence.platform.service.ICategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ public class CategoryControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CategoryService categoryService;
+    private ICategoryService categoryService;
 
     @Test
     public void testGetProductsAvailablePerCategories() throws Exception {

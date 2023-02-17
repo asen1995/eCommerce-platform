@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
 
@@ -25,6 +25,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Override
     public ProductDto createProduct(ProductDto productDto) {
 
         Product product = new Product();
@@ -40,6 +41,8 @@ public class ProductService {
         return productDto;
     }
 
+
+    @Override
     public void deleteProduct(Integer id) throws ProductNotFoundException {
 
         if(!productRepository.existsById(id) ){
@@ -48,6 +51,7 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    @Override
     public ProductDto updateProduct(Integer id, ProductDto productDto) throws ProductNotFoundException {
 
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, id)));
@@ -63,6 +67,7 @@ public class ProductService {
         return productDto;
     }
 
+    @Override
     public ProductsResponse getProducts(ProductOrderEnum orderBy, DirectionEnum direction, Integer page, Integer pageSize) {
 
         Pageable pageAndSortingRequest = PageRequest.of(page, pageSize, SortRequestBuilder.build(orderBy, direction));

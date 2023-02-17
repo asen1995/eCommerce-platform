@@ -2,13 +2,12 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.constants.AppConstants;
 import com.ecommerence.platform.dto.OrderDto;
-import com.ecommerence.platform.dto.ProductDto;
 import com.ecommerence.platform.dto.ProductQuantityPairDto;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.response.OrderResponse;
-import com.ecommerence.platform.service.OrderService;
+import com.ecommerence.platform.service.IOrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +42,7 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OrderService orderService;
+    private IOrderService orderService;
 
     @Test
     public void testOrderProduct() throws Exception {

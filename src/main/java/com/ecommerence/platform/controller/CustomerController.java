@@ -2,8 +2,8 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.dto.CustomerDto;
 import com.ecommerence.platform.dto.OrderDto;
-import com.ecommerence.platform.service.CustomerService;
-import com.ecommerence.platform.service.OrderService;
+import com.ecommerence.platform.service.ICustomerService;
+import com.ecommerence.platform.service.IOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/v1/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final ICustomerService customerService;
 
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
-    public CustomerController(CustomerService customerService, OrderService orderService) {
+    public CustomerController(ICustomerService customerService, IOrderService orderService) {
         this.customerService = customerService;
         this.orderService = orderService;
     }

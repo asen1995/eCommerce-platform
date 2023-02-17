@@ -26,9 +26,7 @@ public class AppConstants {
     public static final String ORDER_COMMENT_IS_MANDATORY_MESSAGE = "Order comment is mandatory";
     public static final String ORDER_COMMENT_SIZE_VALIDATION_ERROR_MESSAGE = "Order comment must be between 20 and 250 characters";
     public static final String ORDER_MUST_CONTAIN_AT_LEAST_ONE_PRODUCT_MESSAGE = "Order must contain at least one pair of product id and quantity";
-    public static final String CUSTOMER_ID_CANNOT_BE_NULL_MESSAGE = "Customer id cannot be null";
-    public static final String ORDER_WITH_ID_HAVE_BEEN_DECLINED_MESSAGE_TEMPLATE = "Order with id %d have been declined";
-    public static final String ORDER_WITH_ID_CANNOT_BE_APPROVED_MESSAGE_TEMPLATE = "Order with id %d cannot be approved";
+    public static final String ORDER_WITH_ID_HAVE_ALREADY_BEEN_DECLINED_MESSAGE_TEMPLATE = "Order with id %d have already been declined";
     public static final String ORDER_WITH_ID_HAVE_ALREADY_BEEN_APPROVED_MESSAGE_TEMPLATE = "Order with id %d have already been approved";
     public static final String PRODUCT_ID_IS_MANDATORY_MESSAGE = "Product id is mandatory";
     public static final String USERNAME_IS_MANDATORY_MESSAGE = "Username is mandatory";

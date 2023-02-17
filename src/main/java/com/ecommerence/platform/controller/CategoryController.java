@@ -2,6 +2,7 @@ package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.response.CategoryAvailableProducts;
 import com.ecommerence.platform.service.CategoryService;
+import com.ecommerence.platform.service.ICategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,9 @@ import java.util.List;
 @RequestMapping("/v1/products/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(ICategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

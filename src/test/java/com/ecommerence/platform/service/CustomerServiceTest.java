@@ -20,7 +20,7 @@ public class CustomerServiceTest {
 
 
     @Autowired
-    private CustomerService customerService;
+    private ICustomerService customerService;
 
     @MockBean
     private CustomerRepository customerRepository;

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 public class ProductServiceTest {
     @Autowired
-    private ProductService productService;
+    private IProductService productService;
 
     @MockBean
     private ProductRepository productRepository;
