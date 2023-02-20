@@ -91,8 +91,8 @@
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="username" type="varchar(50)"/>
-            <column name="password" type="varchar(100)"/>
+            <column name="bo_username" type="varchar(50)"/>
+            <column name="bo_password" type="varchar(100)"/>
         </createTable>
 
         <createTable tableName="back_office_role">
@@ -125,8 +125,8 @@
                              constraintName="permission_name_unique"/>
         <addUniqueConstraint tableName="back_office_role" columnNames="role_name"
                              constraintName="role_name_unique"/>
-        <addUniqueConstraint tableName="back_office_user" columnNames="username"
-                             constraintName="username_unique"/>
+        <addUniqueConstraint tableName="back_office_user" columnNames="bo_username"
+                             constraintName="bo_username_unique"/>
 
 
         <addForeignKeyConstraint baseTableName="back_office_user_roles" baseColumnNames="users_id"
@@ -157,22 +157,22 @@
         <!--        create users-->
         <insert tableName="back_office_user">
             <column name="id" value="1"/>
-            <column name="username" value="admin"/>
-            <column name="password"
+            <column name="bo_username" value="admin"/>
+            <column name="bo_password"
                     value="$2a$10$lWzWj/0akla8TOjHUzLNO.4MqZsPddKmU24shs9r/dZs9Iuxkfcae"/> <!-- admin -->
         </insert>
 
         <insert tableName="back_office_user">
             <column name="id" value="2"/>
-            <column name="username" value="asen311_customers"/>
-            <column name="password"
+            <column name="bo_username" value="asen311_customers"/>
+            <column name="bo_password"
                     value="$2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy"/> <!-- password123 -->
         </insert>
 
         <insert tableName="back_office_user">
             <column name="id" value="3"/>
-            <column name="username" value="asen311_import"/>
-            <column name="password"
+            <column name="bo_username" value="asen311_import"/>
+            <column name="bo_password"
                     value="$2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy"/> <!-- password123 -->
         </insert>
 
