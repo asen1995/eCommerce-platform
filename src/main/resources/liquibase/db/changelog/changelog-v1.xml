@@ -99,16 +99,16 @@
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="role_description" type="varchar(255)"/>
             <column name="role_name" type="varchar(100)"/>
+            <column name="role_description" type="varchar(255)"/>
         </createTable>
 
         <createTable tableName="back_office_permission">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="permission_description" type="varchar(255)"/>
             <column name="permission_name" type="varchar(100)"/>
+            <column name="permission_description" type="varchar(255)"/>
         </createTable>
 
         <createTable tableName="back_office_user_roles">
@@ -149,6 +149,92 @@
         <createSequence sequenceName="back_office_role_permission_id_seq" incrementBy="1" startValue="1"/>
         <createSequence sequenceName="back_office_user_id_seq" incrementBy="1" startValue="1"/>
         <createSequence sequenceName="back_office_user_role_id_seq" incrementBy="1" startValue="1"/>
+
+    </changeSet>
+
+    <changeSet id="6" author="asen">
+
+        <!--        create users-->
+        <insert tableName="back_office_user">
+            <column name="id" value="1"/>
+            <column name="username" value="admin"/>
+            <column name="password"
+                    value="$2a$10$lWzWj/0akla8TOjHUzLNO.4MqZsPddKmU24shs9r/dZs9Iuxkfcae"/> <!-- admin -->
+        </insert>
+
+        <insert tableName="back_office_user">
+            <column name="id" value="2"/>
+            <column name="username" value="asen311_customers"/>
+            <column name="password"
+                    value="$2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy"/> <!-- password123 -->
+        </insert>
+
+        <insert tableName="back_office_user">
+            <column name="id" value="3"/>
+            <column name="username" value="asen311_import"/>
+            <column name="password"
+                    value="$2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy"/> <!-- password123 -->
+        </insert>
+
+        <!--        create roles -->
+        <insert tableName="back_office_role">
+            <column name="id" value="1"/>
+            <column name="role_name" value="SUPER_ADMIN"/>
+            <column name="role_description" value="Super admin role"/>
+        </insert>
+
+        <insert tableName="back_office_role">
+            <column name="id" value="2"/>
+            <column name="role_name" value="CUSTOMER_MANAGER"/>
+            <column name="role_description" value="customer manager role"/>
+        </insert>
+
+        <insert tableName="back_office_role">
+            <column name="id" value="3"/>
+            <column name="role_name" value="IMPORT_MANAGER"/>
+            <column name="role_description" value="import manager role"/>
+        </insert>
+
+        <!--        create permissions -->
+
+        <insert tableName="back_office_permission">
+            <column name="id" value="1"/>
+            <column name="permission_name" value="MANAGING_CUSTOMERS"/>
+            <column name="permission_description" value="this permission allow user to manage customers"/>
+        </insert>
+
+        <insert tableName="back_office_permission">
+            <column name="id" value="2"/>
+            <column name="permission_name" value="IMPORT_PRODUCTS"/>
+            <column name="permission_description" value="this permission allow user to import products"/>
+        </insert>
+
+        <!--   relations between users and roles and permissions -->
+
+        <insert tableName="back_office_user_roles">
+            <column name="users_id" value="1"/>
+            <column name="roles_id" value="1"/>
+        </insert>
+
+        <insert tableName="back_office_user_roles">
+            <column name="users_id" value="2"/>
+            <column name="roles_id" value="2"/>
+        </insert>
+
+        <insert tableName="back_office_user_roles">
+            <column name="users_id" value="3"/>
+            <column name="roles_id" value="3"/>
+        </insert>
+
+        <insert tableName="back_office_role_permissions">
+            <column name="roles_id" value="2"/>
+            <column name="permissions_id" value="1"/>
+        </insert>
+
+        <insert tableName="back_office_role_permissions">
+            <column name="roles_id" value="3"/>
+            <column name="permissions_id" value="2"/>
+        </insert>
 
     </changeSet>
 
