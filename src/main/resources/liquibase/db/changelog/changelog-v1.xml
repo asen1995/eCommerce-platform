@@ -84,4 +84,72 @@
         <createSequence sequenceName="order_product_id_seq" incrementBy="1" startValue="1"/>
 
     </changeSet>
+
+    <changeSet id="5" author="asen">
+
+        <createTable tableName="back_office_user">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(50)"/>
+            <column name="password" type="varchar(100)"/>
+        </createTable>
+
+        <createTable tableName="back_office_role">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="role_description" type="varchar(255)"/>
+            <column name="role_name" type="varchar(100)"/>
+        </createTable>
+
+        <createTable tableName="back_office_permission">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="permission_description" type="varchar(255)"/>
+            <column name="permission_name" type="varchar(100)"/>
+        </createTable>
+
+        <createTable tableName="back_office_user_roles">
+            <column name="users_id" type="int"/>
+            <column name="roles_id" type="int"/>
+        </createTable>
+
+        <createTable tableName="back_office_role_permissions">
+            <column name="roles_id" type="int"/>
+            <column name="permissions_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="back_office_permission" columnNames="permission_name"
+                             constraintName="permission_name_unique"/>
+        <addUniqueConstraint tableName="back_office_role" columnNames="role_name"
+                             constraintName="role_name_unique"/>
+        <addUniqueConstraint tableName="back_office_user" columnNames="username"
+                             constraintName="username_unique"/>
+
+
+        <addForeignKeyConstraint baseTableName="back_office_user_roles" baseColumnNames="users_id"
+                                 constraintName="user_id_fk"
+                                 referencedTableName="back_office_user" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="back_office_user_roles" baseColumnNames="roles_id"
+                                 constraintName="role_id_fk"
+                                 referencedTableName="back_office_role" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="back_office_role_permissions" baseColumnNames="roles_id"
+                                 constraintName="permission_role_id_fk"
+                                 referencedTableName="back_office_role" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="back_office_role_permissions" baseColumnNames="permissions_id"
+                                 constraintName="permission_id_fk"
+                                 referencedTableName="back_office_permission" referencedColumnNames="id"/>
+
+
+        <createSequence sequenceName="back_office_role_permission_id_seq" incrementBy="1" startValue="1"/>
+        <createSequence sequenceName="back_office_user_id_seq" incrementBy="1" startValue="1"/>
+        <createSequence sequenceName="back_office_user_role_id_seq" incrementBy="1" startValue="1"/>
+
+    </changeSet>
+
 </databaseChangeLog>
