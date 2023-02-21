@@ -14,7 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -41,6 +44,25 @@ public class ProductService implements IProductService {
         return productDto;
     }
 
+    @Override
+    @Transactional
+    public List<ProductDto> createProducts(List<ProductDto> productDtoList) {
+
+        final List<Product> productEntities = productDtoList.stream()
+                .map(productDto -> {
+                    Product product = new Product();
+                    product.setName(productDto.getName());
+                    product.setCategory(productDto.getCategory());
+                    product.setDescription(productDto.getDescription());
+                    product.setQuantity(productDto.getQuantity());
+                    product.setCreatedDate(new Date());
+                    return product;
+                }).collect(Collectors.toList());
+
+        productRepository.saveAll(productEntities);
+
+        return productDtoList;
+    }
 
     @Override
     public void deleteProduct(Integer id) throws ProductNotFoundException {
@@ -76,4 +98,5 @@ public class ProductService implements IProductService {
 
         return new ProductsResponse(currentPageProducts.getContent(), currentPageProducts.getTotalElements());
     }
+
 }

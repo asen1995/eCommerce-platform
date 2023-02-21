@@ -6,6 +6,8 @@ import com.ecommerence.platform.enums.ProductOrderEnum;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.response.ProductsResponse;
 
+import java.util.List;
+
 public interface IProductService {
     ProductDto createProduct(ProductDto productDto);
 
@@ -14,4 +16,6 @@ public interface IProductService {
     ProductDto updateProduct(Integer id, ProductDto productDto) throws ProductNotFoundException;
 
     ProductsResponse getProducts(ProductOrderEnum orderBy, DirectionEnum direction, Integer page, Integer pageSize);
+
+    List<ProductDto> createProducts(List<ProductDto> productDtos);
 }

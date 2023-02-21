@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/products")
@@ -42,6 +43,15 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createdProduct);
+    }
+
+    @PostMapping("/add-many")
+    public ResponseEntity<List<ProductDto>> create(@Valid @RequestBody List<ProductDto> productDtos) {
+
+        List<ProductDto> createdProducts = productService.createProducts(productDtos);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createdProducts);
     }
 
     @PutMapping("/{id}")
