@@ -6,9 +6,11 @@ import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
 import com.ecommerence.platform.exception.ProductNotFoundException;
+import com.ecommerence.platform.mapper.ProductMapper;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.util.SortRequestBuilder;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
 
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
+
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -31,12 +35,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
 
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setCategory(productDto.getCategory());
-        product.setDescription(productDto.getDescription());
-        product.setQuantity(productDto.getQuantity());
-
+        Product product = productMapper.toProductEntity(productDto);
         product.setCreatedDate(new Date());
 
         productRepository.save(product);
@@ -50,11 +49,7 @@ public class ProductService implements IProductService {
 
         final List<Product> productEntities = productDtoList.stream()
                 .map(productDto -> {
-                    Product product = new Product();
-                    product.setName(productDto.getName());
-                    product.setCategory(productDto.getCategory());
-                    product.setDescription(productDto.getDescription());
-                    product.setQuantity(productDto.getQuantity());
+                    Product product = productMapper.toProductEntity(productDto);
                     product.setCreatedDate(new Date());
                     return product;
                 }).collect(Collectors.toList());

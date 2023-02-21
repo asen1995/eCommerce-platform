@@ -9,6 +9,7 @@ import com.ecommerence.platform.entity.Order;
 import com.ecommerence.platform.entity.OrderProduct;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.exception.*;
+import com.ecommerence.platform.mapper.OrderMapper;
 import com.ecommerence.platform.repository.CustomerRepository;
 import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
@@ -17,6 +18,7 @@ import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.rsql.CustomRsqlVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class OrderService implements IOrderService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+
+    private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
 
     public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository,
                         OrderProductRepository orderProductRepository) {
@@ -60,11 +64,8 @@ public class OrderService implements IOrderService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
-            OrderResponse orderResponse =
-                    new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
-                            , product);
-
-            return orderResponse;
+            return new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
+                    , product);
 
         } else {
             throw new ProductQuantityNotEnoughException(
@@ -170,15 +171,13 @@ public class OrderService implements IOrderService {
                 RsqlConstants.ORDER_GLOBAL_SEARCH_FOR_LOGGED_USER_RSQL_QUERY
                         .replace("searchString", search)
                         .replace("loggedUsername", username));
+
         Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
-        return orderRepository.findAll(spec).stream().map(order -> {
-            OrderDto orderDto = new OrderDto();
-            orderDto.setName(order.getName());
-            orderDto.setComment(order.getComment());
-            return orderDto;
-        }).collect(Collectors.toList());
-
+        return orderRepository.findAll(spec)
+                .stream()
+                .map(orderMapper::toOrderDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -202,10 +201,6 @@ public class OrderService implements IOrderService {
         order.setApproved(true);
         orderRepository.save(order);
 
-        OrderDto orderDto = new OrderDto();
-        orderDto.setName(order.getName());
-        orderDto.setComment(order.getComment());
-
-        return orderDto;
+        return orderMapper.toOrderDto(order);
     }
 }
