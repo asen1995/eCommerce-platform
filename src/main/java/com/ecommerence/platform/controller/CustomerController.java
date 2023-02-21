@@ -39,6 +39,16 @@ public class CustomerController {
 
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
+    @GetMapping
+    public ResponseEntity<List<CustomerDto>> searchCustomers(@RequestParam(value = "search") String search,
+                                                             @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+
+
+        List<CustomerDto> customersResponse = customerService.searchCustomers(search, page, pageSize);
+
+        return new ResponseEntity<>(customersResponse, HttpStatus.OK);
+    }
 
 
 }

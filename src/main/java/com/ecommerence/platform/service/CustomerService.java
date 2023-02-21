@@ -1,12 +1,21 @@
 package com.ecommerence.platform.service;
 
+import com.ecommerence.platform.constants.RsqlConstants;
 import com.ecommerence.platform.dto.CustomerDto;
 import com.ecommerence.platform.entity.Customer;
 import com.ecommerence.platform.repository.CustomerRepository;
+import com.ecommerence.platform.rsql.CustomRsqlVisitor;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService implements ICustomerService {
@@ -37,5 +46,27 @@ public class CustomerService implements ICustomerService {
         customerRepository.save(customer);
 
         return customerDto;
+    }
+
+    @Override
+    public List<CustomerDto> searchCustomers(String search, Integer page, Integer pageSize) {
+
+        Node rootNode = new RSQLParser().parse(RsqlConstants.CUSTOMER_GLOBAL_SEARCH_RSQL_QUERY.replace("searchString", search));
+        Specification<Customer> spec = rootNode.accept(new CustomRsqlVisitor<>());
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return customerRepository.findAll(spec, pageable)
+                .stream()
+                .map(customer -> {
+                    CustomerDto customerDto = new CustomerDto();
+                    customerDto.setFirstName(customer.getFirstName());
+                    customerDto.setLastName(customer.getLastName());
+                    customerDto.setAddress(customer.getAddress());
+                    customerDto.setCity(customer.getCity());
+                    customerDto.setPhone(customer.getPhone());
+                    customerDto.setEmail(customer.getEmail());
+                    return customerDto;
+                }).collect(Collectors.toList());
     }
 }

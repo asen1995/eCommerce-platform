@@ -10,4 +10,6 @@ public class RsqlConstants {
     public static final String ORDER_GLOBAL_SEARCH_FOR_LOGGED_USER_RSQL_QUERY =
             "customer.username==loggedUsername;comment==*searchString*,customer.firstName==*searchString*,customer.lastName==*searchString*";
 
+    public static final String CUSTOMER_GLOBAL_SEARCH_RSQL_QUERY =
+            "username==*searchString*,firstName==*searchString*,lastName==*searchString*,city==*searchString*,address==*searchString*,email==*searchString*,phone==*searchString*,phone==*searchString*";
 }
