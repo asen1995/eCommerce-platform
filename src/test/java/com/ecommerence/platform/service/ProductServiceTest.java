@@ -20,9 +20,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -153,5 +155,20 @@ public class ProductServiceTest {
         when(productRepository.existsById(anyInt())).thenReturn(false);
         ProductDto result = productService.updateProduct(1, productDto);
         assertEquals(product, result);
+    }
+
+    @Test
+    public void createOrUpdateProducts() {
+
+        List<ProductDto> productDtos = Arrays.asList(new ProductDto(), new ProductDto());
+        List<ProductDto> orUpdateProducts = productService.createOrUpdateProducts(productDtos);
+        assertEquals(productDtos, orUpdateProducts);
+    }
+
+    @Test
+    public void testCreateOrUpdateProductsWithEmptyList(){
+        List<ProductDto> productDtos = Arrays.asList();
+        List<ProductDto> orUpdateProducts = productService.createOrUpdateProducts(productDtos);
+        assertTrue(orUpdateProducts.isEmpty());
     }
 }

@@ -145,11 +145,6 @@
                                  constraintName="permission_id_fk"
                                  referencedTableName="back_office_permission" referencedColumnNames="id"/>
 
-
-        <createSequence sequenceName="back_office_role_permission_id_seq" incrementBy="1" startValue="1"/>
-        <createSequence sequenceName="back_office_user_id_seq" incrementBy="1" startValue="1"/>
-        <createSequence sequenceName="back_office_user_role_id_seq" incrementBy="1" startValue="1"/>
-
     </changeSet>
 
     <changeSet id="6" author="asen">
