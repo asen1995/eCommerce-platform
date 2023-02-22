@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -45,16 +44,15 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public List<ProductDto> createProducts(List<ProductDto> productDtoList) {
+    public List<ProductDto> createOrUpdateProducts(List<ProductDto> productDtoList) {
 
-        final List<Product> productEntities = productDtoList.stream()
+        productDtoList.stream()
                 .map(productDto -> {
                     Product product = productMapper.toProductEntity(productDto);
                     product.setCreatedDate(new Date());
                     return product;
-                }).collect(Collectors.toList());
-
-        productRepository.saveAll(productEntities);
+                })
+                .forEach(productRepository::upsert);
 
         return productDtoList;
     }
@@ -62,7 +60,7 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(Integer id) throws ProductNotFoundException {
 
-        if(!productRepository.existsById(id) ){
+        if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, id));
         }
         productRepository.deleteById(id);

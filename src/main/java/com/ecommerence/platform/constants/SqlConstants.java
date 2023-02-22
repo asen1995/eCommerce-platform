@@ -7,4 +7,11 @@ public class SqlConstants {
 
     public static final String GET_ORDER_BY_ID_FOR_UPDATE = "SELECT * FROM orders WHERE id = :id  FOR UPDATE";
     public static final String GET_PRODUCTS_FOR_UPDATE = "SELECT * FROM product WHERE id IN (:ids) FOR UPDATE";
+    public static final String UPSERT_PRODUCT_WITH_UNIQUE_NAME_AND_CATEGORY = "MERGE INTO PRODUCT p USING DUAL " +
+            "ON (p.PRODUCT_NAME = :#{#product.name} AND p.PRODUCT_CATEGORY = :#{#product.category}) " +
+            " WHEN MATCHED THEN " +
+            "    UPDATE SET p.PRODUCT_QUANTITY = p.PRODUCT_QUANTITY + :#{#product.quantity} , p.UPDATED_DATE = SYSDATE " +
+            " WHEN NOT MATCHED THEN " +
+            "    INSERT (p.id, p.PRODUCT_NAME, p.PRODUCT_CATEGORY, p.PRODUCT_DESCRIPTION, p.PRODUCT_QUANTITY , p.CREATED_DATE) " +
+            "    VALUES (product_id_seq.nextval , :#{#product.name}, :#{#product.category}, :#{#product.description}, :#{#product.quantity}, :#{#product.createdDate} ) ";
 }

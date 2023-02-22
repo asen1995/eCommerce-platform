@@ -17,5 +17,5 @@ public interface IProductService {
 
     ProductsResponse getProducts(ProductOrderEnum orderBy, DirectionEnum direction, Integer page, Integer pageSize);
 
-    List<ProductDto> createProducts(List<ProductDto> productDtos);
+    List<ProductDto> createOrUpdateProducts(List<ProductDto> productDtos);
 }

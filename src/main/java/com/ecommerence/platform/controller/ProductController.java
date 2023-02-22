@@ -48,7 +48,7 @@ public class ProductController {
     @PostMapping("/add-many")
     public ResponseEntity<List<ProductDto>> create(@Valid @RequestBody List<ProductDto> productDtos) {
 
-        List<ProductDto> createdProducts = productService.createProducts(productDtos);
+        List<ProductDto> createdProducts = productService.createOrUpdateProducts(productDtos);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createdProducts);
