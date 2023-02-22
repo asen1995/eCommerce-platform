@@ -3,6 +3,8 @@ package com.ecommerence.platform.security;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("dev")
@@ -54,8 +58,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
             String user = jwtTokenProvider.getUsername(token);
 
+            List<GrantedAuthority> roles = jwtTokenProvider.getRoles(token)
+                    .stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
+
+
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                return new UsernamePasswordAuthenticationToken(user, token, roles);
             }
             return null;
         }
