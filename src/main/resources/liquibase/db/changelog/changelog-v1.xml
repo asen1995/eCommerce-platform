@@ -233,4 +233,34 @@
 
     </changeSet>
 
+    <changeSet id="7" author="asen">
+
+        <!--        initial products-->
+
+        <insert tableName="product">
+            <column name="id" valueComputed="product_id_seq.nextval"/>
+            <column name="product_name" value="Samsung Galaxy 3"/>
+            <column name="product_category" value="Samsung"/>
+            <column name="product_description" value="Samsung Galaxy 3"/>
+            <column name="product_quantity" value="100"/>
+            <column name="created_date" valueDate="sysdate"/>
+        </insert>
+        <insert tableName="product">
+            <column name="id" valueComputed="product_id_seq.nextval"/>
+            <column name="product_name" value="Samsung Galaxy 4"/>
+            <column name="product_category" value="Samsung"/>
+            <column name="product_description" value="Samsung Galaxy 4"/>
+            <column name="product_quantity" value="1000"/>
+            <column name="created_date" valueDate="sysdate"/>
+        </insert>
+        <insert tableName="product">
+            <column name="id" valueComputed="product_id_seq.nextval"/>
+            <column name="product_name" value="Samsung Galaxy 5"/>
+            <column name="product_category" value="Samsung"/>
+            <column name="product_description" value="Samsung Galaxy 4"/>
+            <column name="product_quantity" value="5000"/>
+            <column name="created_date" valueDate="sysdate"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
