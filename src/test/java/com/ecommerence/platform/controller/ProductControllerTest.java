@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -146,5 +147,34 @@ public class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testUpdateProduct_throwDataIntegrityViolationException() throws Exception {
+        when(productService.updateProduct(anyInt(), any(ProductDto.class))).thenThrow(DataIntegrityViolationException.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(productDto);
+
+        mockMvc.perform(put("/v1/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void testAddManyProducts() throws Exception {
+
+        List<ProductDto> productDtos = Arrays.asList(productDto, productDto, productDto, productDto);
+        when(productService.createOrUpdateProducts(any())).thenReturn(productDtos);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(Arrays.asList(productDto, productDto));
+
+        mockMvc.perform(post("/v1/products/add-many")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
     }
 }

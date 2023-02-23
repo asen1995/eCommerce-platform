@@ -8,9 +8,11 @@ import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.service.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/products")
@@ -42,6 +44,16 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createdProduct);
+    }
+
+    @PostMapping("/add-many")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'IMPORT_MANAGER')")
+    public ResponseEntity<List<ProductDto>> create(@Valid @RequestBody List<ProductDto> productDtos) {
+
+        List<ProductDto> createdProducts = productService.createOrUpdateProducts(productDtos);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createdProducts);
     }
 
     @PutMapping("/{id}")

@@ -6,6 +6,7 @@ import com.ecommerence.platform.service.ICustomerService;
 import com.ecommerence.platform.service.IOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,6 +39,17 @@ public class CustomerController {
         List<OrderDto> orderDtoList = orderService.orderSearchForLoggedUser(search);
 
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
+    }
+    @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'CUSTOMER_MANAGER')")
+    public ResponseEntity<List<CustomerDto>> searchCustomers(@RequestParam(value = "search") String search,
+                                                             @RequestParam(value = "page", defaultValue = "0") Integer page,
+                                                             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+
+
+        List<CustomerDto> customersResponse = customerService.searchCustomers(search, page, pageSize);
+
+        return new ResponseEntity<>(customersResponse, HttpStatus.OK);
     }
 
 

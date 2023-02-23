@@ -6,20 +6,26 @@ import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.enums.DirectionEnum;
 import com.ecommerence.platform.enums.ProductOrderEnum;
 import com.ecommerence.platform.exception.ProductNotFoundException;
+import com.ecommerence.platform.mapper.ProductMapper;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.ProductsResponse;
 import com.ecommerence.platform.util.SortRequestBuilder;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
+
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -28,12 +34,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
 
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setCategory(productDto.getCategory());
-        product.setDescription(productDto.getDescription());
-        product.setQuantity(productDto.getQuantity());
-
+        Product product = productMapper.toProductEntity(productDto);
         product.setCreatedDate(new Date());
 
         productRepository.save(product);
@@ -41,11 +42,25 @@ public class ProductService implements IProductService {
         return productDto;
     }
 
+    @Override
+    @Transactional
+    public List<ProductDto> createOrUpdateProducts(List<ProductDto> productDtoList) {
+
+        productDtoList.stream()
+                .map(productDto -> {
+                    Product product = productMapper.toProductEntity(productDto);
+                    product.setCreatedDate(new Date());
+                    return product;
+                })
+                .forEach(productRepository::upsert);
+
+        return productDtoList;
+    }
 
     @Override
     public void deleteProduct(Integer id) throws ProductNotFoundException {
 
-        if(!productRepository.existsById(id) ){
+        if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, id));
         }
         productRepository.deleteById(id);
@@ -76,4 +91,5 @@ public class ProductService implements IProductService {
 
         return new ProductsResponse(currentPageProducts.getContent(), currentPageProducts.getTotalElements());
     }
+
 }

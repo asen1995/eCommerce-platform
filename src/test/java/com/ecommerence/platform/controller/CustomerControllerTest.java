@@ -99,4 +99,25 @@ public class CustomerControllerTest {
     }
 
 
+    @Test
+    public void testSearchCustomers() throws Exception {
+
+        List<CustomerDto> customerDtoList = new ArrayList<>();
+        CustomerDto customerDto = new CustomerDto();
+        customerDto.setUsername("johndoe99");
+        customerDto.setFirstName("John");
+        customerDto.setLastName("Doe");
+
+        when(customerService.searchCustomers(any(String.class), any(Integer.class), any(Integer.class)))
+                .thenReturn(customerDtoList);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expected = objectMapper.writeValueAsString(customerDtoList);
+
+        mockMvc.perform(get("/v1/customers/orders?search=laptop&page=0&size=5"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(expected));
+
+    }
 }
