@@ -18,6 +18,8 @@ import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.rsql.CustomRsqlVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService implements IOrderService {
+
+    private static final Logger logger = LogManager.getLogger(OrderService.class);
 
     private final ProductRepository productRepository;
 
@@ -52,9 +56,12 @@ public class OrderService implements IOrderService {
     @Transactional
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
+        logger.info("Ordering product with id: " + id + " and quantity: " + orderedQuantity);
+
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
 
         if (!oProduct.isPresent()) {
+            logger.error("Product with id: " + id + " not found");
             throw new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE);
         }
 
@@ -64,10 +71,13 @@ public class OrderService implements IOrderService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
+            logger.info("Product with id: " + id + " successfully ordered");
+
             return new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
                     , product);
 
         } else {
+            logger.error("Product with id: " + id + " quantity not enough for the order");
             throw new ProductQuantityNotEnoughException(
                     String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
                             orderedQuantity,
@@ -79,6 +89,8 @@ public class OrderService implements IOrderService {
     @Override
     @Transactional
     public OrderDto createOrder(OrderDto orderDto) throws ProductNotFoundException, ProductQuantityNotEnoughException {
+
+        logger.info("Creating order with name : {} ", orderDto.getName());
 
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -104,10 +116,13 @@ public class OrderService implements IOrderService {
             Product product = selectedProductEntitiesMap.get(pair.getProductId());
 
             if (product == null) {
+                logger.error("Product with id: " + pair.getProductId() + " not found");
                 throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId()));
             }
 
             if (product.getQuantity() < pair.getQuantity()) {
+
+                logger.error("Product with id: " + pair.getProductId() + " quantity not enough for the order");
                 throw new ProductQuantityNotEnoughException(
                         String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
                                 pair.getQuantity(),
@@ -133,12 +148,15 @@ public class OrderService implements IOrderService {
         orderProductRepository.saveAll(orderedProducts);
         productRepository.saveAll(selectedProductEntitiesMap.values());
 
+        logger.info("Order with name : {} successfully created", orderDto.getName());
 
         return orderDto;
     }
 
     @Override
     public List<OrderDto> orderGlobalSearch(String search) {
+
+        logger.info("Searching orders with search string : {} ", search);
 
         Node rootNode = new RSQLParser().parse(RsqlConstants.ORDER_GLOBAL_SEARCH_RSQL_QUERY.replace("searchString", search));
         Specification<Order> spec = rootNode.accept(new CustomRsqlVisitor<>());
@@ -184,6 +202,8 @@ public class OrderService implements IOrderService {
     @Transactional
     public OrderDto approveOrder(Integer id) throws Exception {
 
+        logger.info("Approving order with id : {} ", id);
+
         Order order = orderRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new OrderNotFoundException(AppConstants.ORDER_NOT_FOUND_MESSAGE));
 
@@ -201,6 +221,7 @@ public class OrderService implements IOrderService {
         order.setApproved(true);
         orderRepository.save(order);
 
+        logger.info("Order with id : {} successfully approved", id);
         return orderMapper.toOrderDto(order);
     }
 }
