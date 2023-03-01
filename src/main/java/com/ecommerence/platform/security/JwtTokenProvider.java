@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,5 +61,9 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public List<String> getRoles(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
     }
 }

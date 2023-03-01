@@ -1,8 +1,12 @@
 package com.ecommerence.platform.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,10 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("dev")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LogManager.getLogger(JwtAuthorizationFilter.class);
+
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -50,12 +59,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_PREFIX, "");
 
             if(!jwtTokenProvider.validateToken(token) ){
+                logger.error("Expired or invalid JWT token");
                 return null;
             }
             String user = jwtTokenProvider.getUsername(token);
 
+            List<GrantedAuthority> roles = jwtTokenProvider.getRoles(token)
+                    .stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
+
+
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                return new UsernamePasswordAuthenticationToken(user, token, roles);
             }
             return null;
         }

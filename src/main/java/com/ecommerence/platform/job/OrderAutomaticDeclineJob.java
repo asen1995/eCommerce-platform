@@ -5,7 +5,8 @@ import com.ecommerence.platform.entity.OrderProduct;
 import com.ecommerence.platform.entity.Product;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(name = "job.order.automatic.decline.enabled", havingValue = "true", matchIfMissing = true)
 public class OrderAutomaticDeclineJob {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderAutomaticDeclineJob.class);
+    private static final Logger log = LogManager.getLogger(OrderAutomaticDeclineJob.class);
+
 
     private final OrderRepository orderRepository;
 
