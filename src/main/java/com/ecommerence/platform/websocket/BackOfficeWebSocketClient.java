@@ -1,5 +1,6 @@
 package com.ecommerence.platform.websocket;
 
+import com.ecommerence.platform.constants.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -17,6 +18,8 @@ import javax.annotation.PreDestroy;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static com.ecommerence.platform.constants.AppConstants.TOPIC_ORDER;
 
 @Component
 public class BackOfficeWebSocketClient {
@@ -39,12 +42,7 @@ public class BackOfficeWebSocketClient {
         sessionHandler = new StringMessageSessionHandler();
 
         session = stompClient.connect(getWebSocketUrl(backOfficeServiceName), sessionHandler).get();
-        session.subscribe("/topic/order", sessionHandler);
-
-//        while (true) {
-//            sendMessage("/app/process-new-order", "message ");
-//            Thread.sleep(2000);
-//        }
+        session.subscribe(TOPIC_ORDER, sessionHandler);
     }
 
     @PreDestroy

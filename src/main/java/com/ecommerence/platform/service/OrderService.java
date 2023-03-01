@@ -16,6 +16,7 @@ import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
 import com.ecommerence.platform.rsql.CustomRsqlVisitor;
+import com.ecommerence.platform.websocket.BackOfficeWebSocketClient;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import org.apache.logging.log4j.LogManager;
@@ -43,12 +44,15 @@ public class OrderService implements IOrderService {
 
     private final OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
 
+    private final BackOfficeWebSocketClient backOfficeWebSocketClient;
+
     public OrderService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository,
-                        OrderProductRepository orderProductRepository) {
+                        OrderProductRepository orderProductRepository, BackOfficeWebSocketClient backOfficeWebSocketClient) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository;
+        this.backOfficeWebSocketClient = backOfficeWebSocketClient;
     }
 
 
@@ -147,6 +151,9 @@ public class OrderService implements IOrderService {
         orderRepository.save(order);
         orderProductRepository.saveAll(orderedProducts);
         productRepository.saveAll(selectedProductEntitiesMap.values());
+
+        backOfficeWebSocketClient.sendMessage(AppConstants.PROCESS_NEW_ORDER_WEB_SOCKET_ENDPOINT_PATH,
+                String.format(AppConstants.ORDER_WITH_NAME_CREATED_MESSAGE_TEMPLATE, orderDto.getName()));
 
         logger.info("Order with name : {} successfully created", orderDto.getName());
 
