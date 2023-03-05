@@ -1,6 +1,5 @@
 package com.ecommerence.platform.websocket;
 
-import com.ecommerence.platform.constants.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -19,8 +18,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.ecommerence.platform.constants.AppConstants.TOPIC_ORDER;
-
 @Component
 public class BackOfficeWebSocketClient {
 
@@ -30,19 +27,16 @@ public class BackOfficeWebSocketClient {
     @Value("${back.office.service.name}")
     private String backOfficeServiceName;
 
-    private WebSocketStompClient stompClient;
-    private StringMessageSessionHandler sessionHandler;
     private StompSession session;
 
     @PostConstruct
     public void init() throws InterruptedException, ExecutionException {
 
-        stompClient = new WebSocketStompClient(new StandardWebSocketClient());
+        WebSocketStompClient stompClient = new WebSocketStompClient(new StandardWebSocketClient());
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        sessionHandler = new StringMessageSessionHandler();
+        StringMessageSessionHandler sessionHandler = new StringMessageSessionHandler();
 
         session = stompClient.connect(getWebSocketUrl(backOfficeServiceName), sessionHandler).get();
-        session.subscribe(TOPIC_ORDER, sessionHandler);
     }
 
     @PreDestroy
