@@ -160,8 +160,8 @@
                 <configuration>
                     <changeLogFile>db/changelog/db.changelog-master.yml</changeLogFile>
                     <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
-                    <username>asen311</username>
-                    <password>asen311</password>
+                    <username>ec_platform</username>
+                    <password>ec_platform</password>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                 </configuration>
             </plugin>

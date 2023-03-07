@@ -5,9 +5,3 @@ databaseChangeLog:
       file: db/changelog/V1/changes/changelog-v2.yml
   - include:
       file: db/changelog/V1/changes/changelog-v3.yml
-  - include:
-      file: db/changelog/V1/changes/changelog-v4.yml
-  - include:
-      file: db/changelog/V1/changes/changelog-v5.yml
-  - include:
-      file: db/changelog/V1/changes/changelog-v6.yml
