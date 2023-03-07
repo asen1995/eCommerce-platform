@@ -38,4 +38,9 @@ public class AppConstants {
     public static final String LAST_NAME_IS_MANDATORY_MESSAGE = "Last name is mandatory";
     public static final String FIRST_NAME_SIZE_VALIDATION_ERROR_MESSAGE = "First name must be between 2 and 50 characters";
     public static final String LAST_NAME_SIZE_VALIDATION_ERROR_MESSAGE = "Last name must be between 2 and 50 characters";
+    public static final String ORDER_WITH_NAME_CREATED_MESSAGE_TEMPLATE = "Order with name %s created";
+
+    public static final String TOPIC_ORDER = "/topic/order";
+    public static final String PROCESS_NEW_ORDER_WEB_SOCKET_ENDPOINT_PATH = "/app/process-new-order";
+
 }

@@ -263,4 +263,36 @@
         </insert>
     </changeSet>
 
+    <changeSet id="8" author="asen">
+
+        <insert tableName="back_office_user">
+            <column name="id" value="4"/>
+            <column name="bo_username" value="asen311_order"/>
+            <column name="bo_password"
+                    value="$2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy"/> <!-- password123 -->
+        </insert>
+
+        <insert tableName="back_office_role">
+            <column name="id" value="4"/>
+            <column name="role_name" value="ORDER_MANAGER"/>
+            <column name="role_description" value="order manager role"/>
+        </insert>
+
+        <insert tableName="back_office_permission">
+            <column name="id" value="3"/>
+            <column name="permission_name" value="MANAGE_ORDERS"/>
+            <column name="permission_description" value="this permission allow user to manage orders"/>
+        </insert>
+
+        <insert tableName="back_office_user_roles">
+            <column name="users_id" value="4"/>
+            <column name="roles_id" value="4"/>
+        </insert>
+
+        <insert tableName="back_office_role_permissions">
+            <column name="roles_id" value="4"/>
+            <column name="permissions_id" value="3"/>
+        </insert>
+
+    </changeSet>
 </databaseChangeLog>
