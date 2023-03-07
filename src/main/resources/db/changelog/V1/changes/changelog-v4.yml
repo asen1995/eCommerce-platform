@@ -1,0 +1,169 @@
+databaseChangeLog:
+
+  - changeSet:
+
+      id: insert-back-office-user-and-assign-roles
+      author: asen
+      changes:
+
+        # create back office users
+
+        - insert:
+            tableName: back_office_user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: bo_username
+                  value: admin
+              - column:
+                  name: bo_password
+                  value: $2a$10$lWzWj/0akla8TOjHUzLNO.4MqZsPddKmU24shs9r/dZs9Iuxkfcae   # admin
+
+        - insert:
+            tableName: back_office_user
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: bo_username
+                  value: asen311_customers
+              - column:
+                  name: bo_password
+                  value: $2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy   # password123
+
+        - insert:
+            tableName: back_office_user
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: bo_username
+                  value: asen311_import
+              - column:
+                  name: bo_password
+                  value: $2a$10$yBcaCkxM18dDt4d3NyQm6OPg2cGfrTmNeWnor2qqSZd6V0i7hZ7fy   # password123
+
+        #creating back office user roles
+
+        - insert:
+            tableName: back_office_role
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: role_name
+                  value: SUPER_ADMIN
+              - column:
+                  name: role_description
+                  value: Super admin role
+
+        - insert:
+            tableName: back_office_role
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: role_name
+                  value: CUSTOMER_MANAGER
+              - column:
+                  name: role_description
+                  value: customer manager role
+
+        - insert:
+            tableName: back_office_role
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: role_name
+                  value: IMPORT_MANAGER
+              - column:
+                  name: role_description
+                  value: import manager role
+
+        # create permissions
+
+        - insert:
+            tableName: back_office_permission
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: permission_name
+                  value: MANAGING_CUSTOMERS
+              - column:
+                  name: permission_description
+                  value: this permission allow user to manage customers
+
+        - insert:
+            tableName: back_office_permission
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: permission_name
+                  value: IMPORT_PRODUCTS
+              - column:
+                  name: permission_description
+                  value: this permission allow user to import products
+
+        #    relations between users and roles and permissions
+
+        - insert:
+            tableName: back_office_user_roles
+            columns:
+              - column:
+                  name: users_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: 1
+
+        - insert:
+            tableName: back_office_user_roles
+            columns:
+              - column:
+                  name: users_id
+                  value: 2
+              - column:
+                  name: roles_id
+                  value: 2
+
+        - insert:
+            tableName: back_office_user_roles
+            columns:
+              - column:
+                  name: users_id
+                  value: 3
+              - column:
+                  name: roles_id
+                  value: 3
+
+        - insert:
+            tableName: back_office_role_permissions
+            columns:
+              - column:
+                  name: roles_id
+                  value: 2
+              - column:
+                  name: permissions_id
+                  value: 1
+
+        - insert:
+            tableName: back_office_role_permissions
+            columns:
+              - column:
+                  name: roles_id
+                  value: 3
+              - column:
+                  name: permissions_id
+                  value: 2

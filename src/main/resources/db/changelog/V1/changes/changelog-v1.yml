@@ -1,0 +1,45 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: create_product_table
+      author: asen
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: product_pk
+                    nullable: false
+              - column:
+                  name: product_name
+                  type: varchar(50)
+              - column:
+                  name: product_category
+                  type: varchar(30)
+              - column:
+                  name: product_description
+                  type: varchar(250)
+              - column:
+                  name: product_quantity
+                  type: number(10)
+              - column:
+                  name: created_date
+                  type: DATE
+              - column:
+                  name: updated_date
+                  type: DATE
+
+        - createSequence:
+            sequenceName: product_id_seq
+            incrementBy: 1
+            startValue: 1
+
+        - addUniqueConstraint:
+            tableName: product
+            columnNames: product_name, product_category
+            constraintName: product_name_category_unique

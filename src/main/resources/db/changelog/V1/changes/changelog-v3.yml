@@ -1,0 +1,140 @@
+databaseChangeLog:
+
+  - changeSet:
+
+      id: create-back-office-user-tables
+      author: asen
+      changes:
+
+        - createTable:
+            tableName: back_office_user
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: bo_pk
+                    nullable: false
+              - column:
+                  name: bo_username
+                  type: varchar(50)
+              - column:
+                  name: bo_password
+                  type: varchar(100)
+
+        - createTable:
+            tableName: back_office_role
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: bo_role_pk
+                    nullable: false
+              - column:
+                  name: role_name
+                  type: varchar(100)
+              - column:
+                  name: role_description
+                  type: varchar(255)
+
+        - createTable:
+            tableName: back_office_permission
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: bo_pr_pk
+                    nullable: false
+              - column:
+                  name: permission_name
+                  type: varchar(100)
+              - column:
+                  name: permission_description
+                  type: varchar(255)
+
+        - createTable:
+            tableName: back_office_user_roles
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: bo_user_roles_pk
+                    nullable: false
+              - column:
+                  name: users_id
+                  type: int
+              - column:
+                  name: roles_id
+                  type: int
+
+        - createTable:
+            tableName: back_office_role_permissions
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: bo_role_pr_pk
+                    nullable: false
+              - column:
+                  name: roles_id
+                  type: int
+              - column:
+                  name: permissions_id
+                  type: int
+
+        - addUniqueConstraint:
+            constraintName: permission_name_unique
+            tableName: back_office_permission
+            columnNames: permission_name
+
+        - addUniqueConstraint:
+            constraintName: role_name_unique
+            tableName: back_office_role
+            columnNames: role_name
+
+        - addUniqueConstraint:
+            constraintName: bo_username_unique
+            tableName: back_office_user
+            columnNames: bo_username
+
+        - addForeignKeyConstraint:
+            baseTableName: back_office_user_roles
+            baseColumnNames: users_id
+            constraintName: user_id_fk
+            referencedTableName: back_office_user
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: back_office_user_roles
+            baseColumnNames: roles_id
+            constraintName: role_id_fk
+            referencedTableName: back_office_role
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: back_office_role_permissions
+            baseColumnNames: roles_id
+            constraintName: permission_role_id_fk
+            referencedTableName: back_office_role
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: back_office_role_permissions
+            baseColumnNames: permissions_id
+            constraintName: permission_id_fk
+            referencedTableName: back_office_permission
+            referencedColumnNames: id
