@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/V1/changes/changelog-0.0.1.yml
+  - include:
+      file: db/changelog/V1/changes/changelog-0.0.2.yml
+  - include:
+      file: db/changelog/V1/changes/changelog-0.0.3.yml
