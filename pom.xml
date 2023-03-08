@@ -158,11 +158,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.0.0</version>
                 <configuration>
-                    <changeLogFile>db/changelog/db.changelog-master.yml</changeLogFile>
-                    <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
-                    <username>ec_platform</username>
-                    <password>ec_platform</password>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                    <propertyFile>liquibase.properties</propertyFile>
                 </configuration>
             </plugin>
 
