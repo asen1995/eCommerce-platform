@@ -61,6 +61,16 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -148,11 +158,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.0.0</version>
                 <configuration>
-                    <changeLogFile>db/changelog/db.changelog-master.xml</changeLogFile>
-                    <url>jdbc:oracle:thin:@localhost:1521:orcl</url>
-                    <username>asen311</username>
-                    <password>asen311</password>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                    <propertyFile>liquibase.properties</propertyFile>
                 </configuration>
             </plugin>
 

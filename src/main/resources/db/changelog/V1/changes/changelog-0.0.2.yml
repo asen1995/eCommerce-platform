@@ -1,0 +1,135 @@
+databaseChangeLog:
+
+  - changeSet:
+
+      id: create-customer-order-tables
+      author: asen
+      changes:
+
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: customer_pk
+                    nullable: false
+              - column:
+                  name: customer_username
+                  type: varchar(50)
+              - column:
+                  name: customer_password
+                  type: varchar(100)
+              - column:
+                  name: customer_first_name
+                  type: varchar(50)
+              - column:
+                  name: customer_last_name
+                  type: varchar(50)
+              - column:
+                  name: customer_email
+                  type: varchar(50)
+              - column:
+                  name: customer_phone
+                  type: varchar(50)
+              - column:
+                  name: customer_address
+                  type: varchar(50)
+              - column:
+                  name: customer_city
+                  type: varchar(50)
+              - column:
+                  name: created_date
+                  type: DATE
+
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: orders_pk
+                    nullable: false
+              - column:
+                  name: order_name
+                  type: varchar(50)
+              - column:
+                  name: order_comment
+                  type: varchar(250)
+              - column:
+                  name: order_approved
+                  type: number(1)
+              - column:
+                  name: created_date
+                  type: TIMESTAMP(6)
+              - column:
+                  name: customer_id
+                  type: int
+
+        - createTable:
+            tableName: orders_products
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: orders_products_pk
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: int
+              - column:
+                  name: product_id
+                  type: int
+              - column:
+                  name: quantity
+                  type: number(10)
+
+        - addUniqueConstraint:
+            tableName: customer
+            columnNames: customer_username
+            constraintName: customer_username_unique
+
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: customer_id
+            constraintName: customer_id_fk
+            referencedTableName: customer
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: orders_products
+            baseColumnNames: order_id
+            constraintName: order_id_fk
+            referencedTableName: orders
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: orders_products
+            baseColumnNames: product_id
+            constraintName: product_id_fk
+            referencedTableName: product
+            referencedColumnNames: id
+
+        - createSequence:
+            sequenceName: customer_id_seq
+            incrementBy: 1
+            startValue: 1
+
+        - createSequence:
+            sequenceName: order_id_seq
+            incrementBy: 1
+            startValue: 1
+
+        - createSequence:
+            sequenceName: order_product_id_seq
+            incrementBy: 1
+            startValue: 1

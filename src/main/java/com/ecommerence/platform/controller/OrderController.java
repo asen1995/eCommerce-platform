@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -57,6 +58,7 @@ public class OrderController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORDER_MANAGER')")
     public ResponseEntity<List<OrderDto>> orderGlobalSearch(@RequestParam(value = "search") String search) {
 
         logger.info("Searching for orders with search: {}", search);
@@ -67,6 +69,7 @@ public class OrderController {
     }
 
     @PutMapping("/approve/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ORDER_MANAGER')")
     public ResponseEntity<OrderDto> approve(@PathVariable("id") Integer id) throws Exception {
 
         logger.info("Approving order with id: {} started", id);

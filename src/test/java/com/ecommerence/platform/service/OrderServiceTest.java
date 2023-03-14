@@ -11,6 +11,7 @@ import com.ecommerence.platform.repository.OrderProductRepository;
 import com.ecommerence.platform.repository.OrderRepository;
 import com.ecommerence.platform.repository.ProductRepository;
 import com.ecommerence.platform.response.OrderResponse;
+import com.ecommerence.platform.websocket.BackOfficeWebSocketClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -50,6 +51,9 @@ public class OrderServiceTest {
 
     @MockBean
     private OrderProductRepository orderProductRepository;
+
+    @MockBean
+    private BackOfficeWebSocketClient backOfficeWebSocketClient;
 
 
     @Test
