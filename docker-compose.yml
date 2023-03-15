@@ -15,3 +15,5 @@ services:
     ports:
       - 1522:1521
       - 5502:5500
+    volumes:
+      - C:/oracle/oradata:/opt/oracle/oradata
