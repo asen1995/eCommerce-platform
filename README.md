@@ -93,3 +93,57 @@ curl -X DELETE -H "Content-Type: application/json" "http://localhost:8086/v1/pro
 curl -X GET "http://localhost:8086/v1/products?orderBy=CATEGORY&direction=ASC&page=0&pageSize=2"
 
 etc.
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Docker setup:
+
+
+Run this command from root of the project to build image:
+
+```console
+docker build --build-arg VERSION=0.0.1-SNAPSHOT -t ecommerce-platform-image .
+```
+
+
+run image on container:
+
+```console
+docker run --name ecommerce-platform-service -p 8086:8086 ecommerce-platform-image
+```
+
+
+Docker compose setup:
+
+1. Create images for : eureka-discovery-server, ecommerce-back-office-service and ecommerce-platform-service
+ 
+
+2. Run the following command from root of the project to run the containers:
+
+```console
+docker-compose up
+```
+
+The command will run the following containers:
+
+- ecommerce-eureka-discovery-server
+- ecommerce-back-office-service
+- ecommerce-platform-service
+- ecommerce-platform-database-container
+- ecommerce-back-office-database-container
+
+For the database containers you need to configure the volumes in the docker-compose.yml file.
+The containers share the same network, so they can communicate with each other.
+
+
+To stop the containers use the following command:
+
+```console
+docker-compose down
+```
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

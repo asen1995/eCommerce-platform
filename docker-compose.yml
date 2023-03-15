@@ -7,8 +7,19 @@ services:
     ports:
       - 8761:8761
 
-  database:
-    container_name: e-commerce-platform-oracle-database-container
+  ecommerce-platform-database-container:
+    container_name: ecommerce-platform-database-container
+    image: container-registry.oracle.com/database/express:latest
+    environment:
+      - ORACLE_PWD=asen311
+    ports:
+      - 1523:1521
+      - 5501:5500
+    volumes:
+      - C:/oracle/ecommerceplatform/oradata:/opt/oracle/oradata
+
+  ecommerce-back-office-database-container:
+    container_name: ecommerce-back-office-database-container
     image: container-registry.oracle.com/database/express:latest
     environment:
       - ORACLE_PWD=asen311
@@ -18,14 +29,28 @@ services:
     volumes:
       - C:/oracle/oradata:/opt/oracle/oradata
 
+
   ecommerce-back-office-service:
     container_name: ecommerce-back-office-service
     image: ecommerce-back-office-service-image
     ports:
       - 8087:8087
     depends_on:
-      - database
+      - ecommerce-back-office-database-container
       - ecommerce-eureka-discovery-server
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@database:1521:xe
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-back-office-database-container:1521:xe
+      - EUREKA_CLIENT_SERVICE_URL=http://ecommerce-eureka-discovery-server:8761/eureka/
+
+  ecommerce-platform-service:
+    container_name: ecommerce-platform-service
+    image: ecommerce-platform-image
+    ports:
+      - 8086:8086
+    depends_on:
+      - ecommerce-platform-database-container
+      - ecommerce-eureka-discovery-server
+      - ecommerce-back-office-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-platform-database-container:1521:xe
       - EUREKA_CLIENT_SERVICE_URL=http://ecommerce-eureka-discovery-server:8761/eureka/
