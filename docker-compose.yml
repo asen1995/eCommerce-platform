@@ -17,3 +17,15 @@ services:
       - 5502:5500
     volumes:
       - C:/oracle/oradata:/opt/oracle/oradata
+
+  ecommerce-back-office-service:
+    container_name: ecommerce-back-office-service
+    image: ecommerce-back-office-service-image
+    ports:
+      - 8087:8087
+    depends_on:
+      - database
+      - ecommerce-eureka-discovery-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@database:1521:xe
+      - EUREKA_CLIENT_SERVICE_URL=http://ecommerce-eureka-discovery-server:8761/eureka/
