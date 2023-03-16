@@ -118,7 +118,7 @@ docker run --name ecommerce-platform-service -p 8086:8086 ecommerce-platform-ima
 
 Docker compose setup:
 
-1. Create images for : eureka-discovery-server, ecommerce-back-office-service and ecommerce-platform-service
+1. Create images for : eureka-discovery-server, ecommerce-back-office-service and ecommerce-platform-service from their Dockerfiles.
  
 
 2. Run the following command from root of the project to run the containers:
@@ -136,6 +136,7 @@ The command will run the following containers:
 - ecommerce-back-office-database-container
 
 For the database containers you need to configure the volumes in the docker-compose.yml file.
+If you setup the databases for the first time, you need to run the liquibase migrations for each container.
 The containers share the same network, so they can communicate with each other.
 
 
