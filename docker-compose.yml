@@ -16,7 +16,7 @@ services:
       - 1523:1521
       - 5501:5500
     volumes:
-      - C:/oracle/ecommerceplatform/oradata:/opt/oracle/oradata
+      - ecommerce-platform-database_volume:/opt/oracle/oradata
 
   ecommerce-back-office-database-container:
     container_name: ecommerce-back-office-database-container
@@ -27,7 +27,7 @@ services:
       - 1522:1521
       - 5502:5500
     volumes:
-      - C:/oracle/oradata:/opt/oracle/oradata
+      - ecommerce-platform-back-office-database_volume:/opt/oracle/oradata
 
 
   ecommerce-back-office-service:
@@ -40,6 +40,8 @@ services:
       - ecommerce-eureka-discovery-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-back-office-database-container:1521:xe
+      - SPRING_DATASOURCE_USERNAME=ec_back_office
+      - SPRING_DATASOURCE_PASSWORD=ec_back_office
       - EUREKA_CLIENT_SERVICE_URL=http://ecommerce-eureka-discovery-server:8761/eureka/
 
   ecommerce-platform-service:
@@ -53,4 +55,20 @@ services:
       - ecommerce-back-office-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@ecommerce-platform-database-container:1521:xe
+      - SPRING_DATASOURCE_USERNAME=ec_platform
+      - SPRING_DATASOURCE_PASSWORD=ec_platform
       - EUREKA_CLIENT_SERVICE_URL=http://ecommerce-eureka-discovery-server:8761/eureka/
+
+volumes:
+  ecommerce-platform-back-office-database_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: C:/oracle/ecommerce-back-office/oradata
+      o: bind
+  ecommerce-platform-database_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: C:/oracle/ecommerceplatform/oradata
+      o: bind
