@@ -8,38 +8,50 @@ pipeline {
     stages {
         stage('Test Ecommerce discovery server') {
             steps {
-                git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform-eureka-discovery-server.git'
+                git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform-eureka-discovery-server.git'
                 bat 'mvn test'
             }
         }
-        stage('Build Ecommerce discovery server') {
+        stage('Build docker Ecommerce discovery server image') {
                     steps {
-                        git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform-eureka-discovery-server.git'
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform-eureka-discovery-server.git'
                         bat 'mvn clean install -DskipTests'
+                        bat 'docker rmi ecommerce-discovery-server-image'
+                        bat 'docker build --build-arg VERSION=0.0.1-SNAPSHOT -t ecommerce-discovery-server-image .'
                     }
         }
         stage('Test Back-Office service') {
                     steps {
-                        git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-Platform-BackOffice.git'
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-Platform-BackOffice.git'
                         bat 'mvn test'
                     }
         }
-        stage('Build Back-Office service') {
+        stage('Build docker Back-Office service image') {
                     steps {
-                        git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-Platform-BackOffice.git'
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-Platform-BackOffice.git'
                         bat 'mvn clean install -DskipTests'
+                        bat 'docker rmi ecommerce-back-office-service-image'
+                        bat 'docker build --build-arg VERSION=0.0.1-SNAPSHOT -t ecommerce-back-office-service-image .'
                     }
         }
         stage('Test Ecommerce-platform service') {
                     steps {
-                        git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
                         bat 'mvn test'
                     }
         }
-        stage('Build Ecommerce-platform service') {
+        stage('Build docker Ecommerce-platform service image') {
                     steps {
-                        git branch: 'master', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
                         bat 'mvn clean install -DskipTests'
+                        bat 'docker rmi ecommerce-platform-image'
+                        bat 'docker build --build-arg VERSION=0.0.1-SNAPSHOT -t ecommerce-platform-image .'
+                    }
+        }
+        stage('Deploy') {
+                    steps {
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
+                        bat 'docker-compose up -d'
                     }
         }
     }
