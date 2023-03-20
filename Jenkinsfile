@@ -6,6 +6,14 @@ pipeline {
         }
 
     stages {
+
+        stage('Stop deployment server') {
+                    steps {
+                        git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform.git'
+                        bat 'docker-compose down'
+                    }
+        }
+
         stage('Test Ecommerce discovery server') {
             steps {
                 git branch: 'docker', credentialsId: 'fa48c95b-ef28-4fe9-bb77-c6008be5aa3d', url: 'https://github.com/asen1995/eCommerce-platform-eureka-discovery-server.git'
