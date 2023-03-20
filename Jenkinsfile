@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    triggers {
+            cron('30 23 * * *') //run at 23:30:00
+        }
+
     stages {
         stage('Test Ecommerce discovery server') {
             steps {
