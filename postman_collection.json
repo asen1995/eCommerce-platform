@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "eb8643aa-848c-4f6d-98e5-062f28c02de7",
+		"name": "app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "globalsearch",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExIiwicm9sZXMiOltdLCJpYXQiOjE2NzU5MjkwNzIsImV4cCI6MTY3NjAxNTQ3Mn0.y6BkXQSXMj44VlzD_po-A79NNM5Vd2pzEU30RgIvxSA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8086/v1/customers/orders?search=fd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"v1",
+						"customers",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "fd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8086/v1/products?orderBy=NAME&direction=ASC&page=0&pageSize=5",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuNDExIiwicm9sZXMiOltdLCJpYXQiOjE2NzU4NDM0NjAsImV4cCI6MTY3NTkyOTg2MH0.8wLrsCRr0-2SkNdYnyAz78NvhLk_cTqecLS8IrW9r3Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8086/v1/products?orderBy=NAME&direction=ASC&page=0&pageSize=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "orderBy",
+							"value": "NAME"
+						},
+						{
+							"key": "direction",
+							"value": "ASC"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchLogged",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "product-orrder-register-customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"string\",\r\n  \"password\": \"string\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"string@mail.bg\",\r\n  \"phone\": \"string\",\r\n  \"address\": \"string\",\r\n  \"city\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8086/v1/customers/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"v1",
+						"customers",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8086/v1/orders",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExIiwicm9sZXMiOltdLCJpYXQiOjE2NzY0NDk2NDYsImV4cCI6MTY3NjUzNjA0Nn0.UsuHFcUkXDEyffMX6mH4O9lK8rgCuqCB0wr_1MV4fDI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"string\",\r\n  \"comment\": \"stringstringstringst\",\r\n  \"productQuantityPairDtoList\": [\r\n    {\r\n      \"productId\": 1,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": 2,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": 21,\r\n      \"quantity\": 5\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8086/v1/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"v1",
+						"orders"
+					]
+				},
+				"description": "create Order"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8086/authenticate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"string\",\r\n  \"password\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8086/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "superadmin-getcustomers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sImlhdCI6MTY3Njk4ODk4OSwiZXhwIjoxNjc3MDc1Mzg5fQ.hLZw8bCG5lyigE13PX0Y8yIL-H8VjlrJeGFAjx9gG1c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8087/v1/customers?search=maikl.bg&page=0&pageSize=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"v1",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "maikl.bg"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "5"
+						}
+					]
+				},
+				"description": "findallcustomer with role"
+			},
+			"response": []
+		},
+		{
+			"name": "importmanager",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExX2ltcG9ydCIsInJvbGVzIjpbIklNUE9SVF9NQU5BR0VSIl0sImlhdCI6MTY3Njk4OTIwMCwiZXhwIjoxNjc3MDc1NjAwfQ.9kja1e9x1Lpr1qNwT1M5WAj98Fi445cD3YrFelRbTE0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8087/v1/customers?search=maikl.bg&page=0&pageSize=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"v1",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "maikl.bg"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "uploadFile as import manager",
+			"protocolProfileBehavior": {
+				"strictSSL": false
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExX2ltcG9ydCIsInJvbGVzIjpbIklNUE9SVF9NQU5BR0VSIl0sImlhdCI6MTY3Nzc0MzMwNSwiZXhwIjoxNjc3ODI5NzA1fQ.dPwdjfkm9hMS__ZA6ZeoQpnVV3bSxmOFlhIoCwu5Yn0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/User/Downloads/back-office-products-template-2115995bdda13a738d5a1449625ba192.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8087/v1/products/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"v1",
+						"products",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "back-office-authentication-post-request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"asen311_order\",\r\n  \"password\": \"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8087/authenticate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "back-office-order-global-search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExX29yZGVyIiwicm9sZXMiOlsiT1JERVJfTUFOQUdFUiJdLCJpYXQiOjE2Nzc3NTc2NDYsImV4cCI6MTY3Nzg0NDA0Nn0.2iCmVX0--nDX0RXzITbukDb7n4hzc5xqPd91RGvxXTA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8087/v1/orders?search=s",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"v1",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "s"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "backoffice-approve-order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2VuMzExX29yZGVyIiwicm9sZXMiOlsiT1JERVJfTUFOQUdFUiJdLCJpYXQiOjE2NzgwNDY4ODMsImV4cCI6MTY3ODEzMzI4M30.sqfJxYKn0uYWyNBoH5XbroKglvuYjjJ8jacu-GKC-gU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8087/v1/orders/approve/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8087",
+					"path": [
+						"v1",
+						"orders",
+						"approve",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
