@@ -5,8 +5,6 @@ import com.ecommerence.platform.exception.CustomerNotFoundException;
 import com.ecommerence.platform.exception.ProductNotFoundException;
 import com.ecommerence.platform.exception.ProductQuantityNotEnoughException;
 import com.ecommerence.platform.response.OrderResponse;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.ecommerence.platform.controller;
 
 import com.ecommerence.platform.response.CategoryAvailableProducts;
-import com.ecommerence.platform.service.CategoryService;
 import com.ecommerence.platform.service.ICategoryService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
