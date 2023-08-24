@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Profile("dev")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LogManager.getLogger(JwtAuthorizationFilter.class);
+    private static final Logger jwtAuthorizationFilterLogger = LogManager.getLogger(JwtAuthorizationFilter.class);
 
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -58,7 +58,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_PREFIX, "");
 
             if(!jwtTokenProvider.validateToken(token) ){
-                logger.error("Expired or invalid JWT token");
+                jwtAuthorizationFilterLogger.error("Expired or invalid JWT token");
                 return null;
             }
             String user = jwtTokenProvider.getUsername(token);
