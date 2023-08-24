@@ -70,7 +70,7 @@ public class OrderAutomaticDeclineJob {
             orderRepository.save(order);
             productRepository.saveAll(selectedProductEntitiesMap.values());
 
-            log.debug("Order with id: " + order.getId() + " has been set to not approved");
+            log.debug("Order with id: {} has been set to not approved", + order.getId());
         });
 
     }
