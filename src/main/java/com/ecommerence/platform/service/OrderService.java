@@ -60,12 +60,12 @@ public class OrderService implements IOrderService {
     @Transactional
     public OrderResponse orderProduct(Integer id, Integer orderedQuantity) throws Exception {
 
-        logger.info("Ordering product with id: " + id + " and quantity: " + orderedQuantity);
+        logger.info("Ordering product with id: {} and quantity: {}", id, orderedQuantity);
 
         Optional<Product> oProduct = productRepository.findByIdForUpdate(id);
 
         if (!oProduct.isPresent()) {
-            logger.error("Product with id: " + id + " not found");
+            logger.error("Product with id: {} not found", id);
             throw new ProductNotFoundException(AppConstants.PRODUCT_NOT_FOUND_MESSAGE);
         }
 
@@ -75,13 +75,13 @@ public class OrderService implements IOrderService {
             product.setQuantity(product.getQuantity() - orderedQuantity);
             productRepository.save(product);
 
-            logger.info("Product with id: " + id + " successfully ordered");
+            logger.info("Product with id: {} successfully ordered", id);
 
             return new OrderResponse(String.format(AppConstants.PRODUCT_SUCCESSFUL_ORDER_MESSAGE_TEMPLATE, orderedQuantity, product.getName())
                     , product);
 
         } else {
-            logger.error("Product with id: " + id + " quantity not enough for the order");
+            logger.error("Product with id: {} quantity not enough for the order", id);
             throw new ProductQuantityNotEnoughException(
                     String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
                             orderedQuantity,
@@ -120,13 +120,13 @@ public class OrderService implements IOrderService {
             Product product = selectedProductEntitiesMap.get(pair.getProductId());
 
             if (product == null) {
-                logger.error("Product with id: " + pair.getProductId() + " not found");
+                logger.error("Product with id: {} not found", pair.getProductId());
                 throw new ProductNotFoundException(String.format(AppConstants.PRODUCT_WITH_ID_NOT_FOUND_MESSAGE_TEMPLATE, pair.getProductId()));
             }
 
             if (product.getQuantity() < pair.getQuantity()) {
 
-                logger.error("Product with id: " + pair.getProductId() + " quantity not enough for the order");
+                logger.error("Product with id: {} quantity not enough for the order", pair.getProductId());
                 throw new ProductQuantityNotEnoughException(
                         String.format(AppConstants.PRODUCT_QUANTITY_NOT_ENOUGH_MESSAGE_TEMPLATE,
                                 pair.getQuantity(),
