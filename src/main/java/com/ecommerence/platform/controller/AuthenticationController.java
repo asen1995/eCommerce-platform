@@ -39,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest loginRequest) {
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest loginRequest) {
 
         logger.info("Authenticating user: {}", loginRequest.getUsername());
 
